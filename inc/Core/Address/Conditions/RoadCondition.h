@@ -3,6 +3,33 @@
 
 #include "Condition.h"
 
+/**
+ * @brief Abstract base class for road conditions.
+ *
+ * This class extends the Condition class by providing a default implementation
+ * for setting a generic road condition type ("Road Condition"). It also enforces that
+ * derived classes implement a method to append specific details to the road condition.
+ */
+
+/**
+ * @brief Virtual destructor for RoadCondition.
+ *
+ * Ensures proper cleanup for derived classes during polymorphic deletion.
+ */
+
+/**
+ * @brief Sets the generic road condition type.
+ *
+ * Overrides the base implementation to assign "Road Condition" to the internal
+ * road condition type string.
+ */
+
+/**
+ * @brief Pure virtual function to set detailed road condition information.
+ *
+ * Derived classes must implement this method to modify or append specific details
+ * (e.g., " - in Construction.") to the generic road condition type.
+ */
 class RoadCondition : public Condition {
 public:
 	virtual ~RoadCondition();

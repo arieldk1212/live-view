@@ -5,8 +5,13 @@
 #include <unordered_map>
 
 /**
- * @brief images will be saved in a different storage, possibly an S3 bucket or
- * something like that.
+ * @brief Represents an image with associated metadata for external storage.
+ *
+ * This class encapsulates details such as the local folder path, external URL, and image metadata
+ * provided via a key-value map. It supports initializing an image object with either a constant or
+ * movable metadata map, enabling efficient resource management. The image may reside on external
+ * storage systems (e.g., an S3 bucket), and the class provides an Init() method for any additional
+ * initialization steps post construction.
  */
 
 class Image {

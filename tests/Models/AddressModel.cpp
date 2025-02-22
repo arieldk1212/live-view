@@ -6,6 +6,14 @@ protected:
   std::string DatabaseConnectionString;
   std::shared_ptr<DatabaseManager> Manager;
 
+  /**
+   * @brief Sets up the test fixture for AddressModel tests.
+   *
+   * Selects the appropriate database configuration file based on the environment.
+   * If the "GITHUB_ACTIONS" environment variable is present, it uses the CI configuration file;
+   * otherwise, it defaults to the regular configuration file. It then initializes the 
+   * DatabaseManager instance using the determined connection string.
+   */
   void SetUp() override {
     if (std::getenv("GITHUB_ACTIONS") != nullptr) {
       DatabaseConnectionString =
@@ -17,6 +25,12 @@ protected:
     Manager = std::make_shared<DatabaseManager>(DatabaseConnectionString);
   }
 
+  /**
+   * @brief Cleans up the test fixture after each test case.
+   *
+   * This function removes the "Address" model from the database and resets the DatabaseManager instance,
+   * ensuring that the test environment is properly cleaned up after each test.
+   */
   void TearDown() override {
     Manager->RemoveModel("Address");
     Manager.reset();

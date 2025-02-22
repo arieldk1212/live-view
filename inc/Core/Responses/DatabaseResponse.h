@@ -3,6 +3,48 @@
 
 #include "Response.h"
 
+/**
+ * @brief Encapsulates a database response based on pqxx::result.
+ *
+ * This class wraps a pqxx::result, providing access to the query string and response size,
+ * executing benchmarking routines, and identifying the response type as a database response.
+ */
+
+/**
+ * @brief Initializes a DBResponse with a constant reference to a pqxx::result.
+ *
+ * @param ResponseData The database response result data.
+ */
+
+/**
+ * @brief Initializes a DBResponse by moving a pqxx::result.
+ *
+ * @param ResponseData The database response result data to be moved.
+ */
+
+/**
+ * @brief Retrieves the query string associated with the response data.
+ *
+ * @return const std::string The query string from the underlying pqxx::result.
+ */
+
+/**
+ * @brief Returns the size of the response data.
+ *
+ * @return const size_t The size of the database response.
+ */
+
+/**
+ * @brief Executes a provided function for benchmarking purposes.
+ *
+ * @param Func The callable function to execute as a benchmark.
+ */
+
+/**
+ * @brief Returns the response type identifier.
+ *
+ * @return const std::string A string literal "Response: Database" indicating the type.
+ */
 class DBResponse : Response<pqxx::result> {
 public:
   explicit DBResponse(const pqxx::result &ResponseData);

@@ -1,14 +1,18 @@
 #include "../inc/App.h"
 
 /**
- * @attention
- * this acts as the frontend of the application in "swift".
- * in this main function we demonstrate how the backend's api is being held.
- * further tests will be run here.
- * maybe instead of main have a function that starts the threading or dbpool,
- * make it a library. communicate with the swift with grpc? graphql? what to
- * choose?? (probably pool for saving and limiting actions). for now act as a
- * int main() appliaction until we reach that bridge..
+ * @brief Application entry point demonstrating initialization and basic CRUD operations.
+ *
+ * Initializes logging and establishes a database connection using settings from a configuration file.
+ * Sets up a shared database manager and an address model, then performs demonstration operations:
+ * adding, updating, and deleting address entries. Cleanup is executed by removing the address model
+ * from the manager.
+ *
+ * @warning When running in debug mode, ensure the working directory is correctly set (e.g., to build/src)
+ * to avoid path-related errors.
+ *
+ * @attention This function serves as the frontend interface of the application and may be refactored in the
+ * future to support features such as threading, database pooling, or alternate communication methods like gRPC/GraphQL.
  */
 
 int main() {

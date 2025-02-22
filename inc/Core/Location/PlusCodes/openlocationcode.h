@@ -14,6 +14,100 @@
 #include <string>
 #include <array>
 
+/**
+ * @brief Encodes geographic coordinates into an Open Location Code with a specified precision.
+ *
+ * Converts the given location (latitude and longitude) into an Open Location Code (OLC) that represents
+ * a rectangular area enclosing the location. The number of significant digits in the code is determined by
+ * the code_length parameter. The generated code may include an extra separator character for formatting.
+ *
+ * @param location Geographic coordinates to encode.
+ * @param code_length Number of significant digits to include in the resulting OLC.
+ * @return A string containing the generated Open Location Code.
+ */
+
+/**
+ * @brief Encodes geographic coordinates into a default-accuracy Open Location Code.
+ *
+ * Generates an Open Location Code (OLC) for the specified geographic coordinates using a default precision
+ * that is sufficient for representing a building (approximately 13x13 meters at the Earth's equator).
+ *
+ * @param location Geographic coordinates to encode.
+ * @return A string containing the generated Open Location Code.
+ */
+
+/**
+ * @brief Decodes an Open Location Code into a geographic area.
+ *
+ * Interprets the provided Open Location Code (OLC) and returns a CodeArea structure that describes the rectangular
+ * geographic region represented by the code.
+ *
+ * @param code An Open Location Code string.
+ * @return A CodeArea describing the decoded geographic area.
+ */
+
+/**
+ * @brief Shortens a full Open Location Code based on a reference location.
+ *
+ * Reduces a full Open Location Code by removing leading characters that can be inferred from the provided
+ * reference location. The extent of shortening depends on the distance between the code’s center and the reference
+ * location. If the code is not a valid full code or is padded, the original code is returned unchanged.
+ *
+ * @param code The full Open Location Code to shorten.
+ * @param reference_location The geographic location used as a reference for determining how much of the code can be omitted.
+ * @return A shortened Open Location Code if applicable; otherwise, the original code.
+ */
+
+/**
+ * @brief Recovers the nearest full Open Location Code from a short code.
+ *
+ * Expands a short Open Location Code (consisting of 4 to 7 characters) into its nearest full code based on the
+ * provided reference location. If the short code is invalid, the function returns it unchanged.
+ *
+ * @param short_code A short Open Location Code.
+ * @param reference_location The geographic reference location used for recovering the full code.
+ * @return The nearest matching full Open Location Code, or the original code if recovery is not possible.
+ */
+
+/**
+ * @brief Counts the valid characters in an Open Location Code.
+ *
+ * Determines the number of valid digits in the provided OLC string, excluding any invalid characters and formatting separators.
+ *
+ * @param code The Open Location Code string to analyze.
+ * @return The count of valid digits in the code.
+ */
+
+/**
+ * @brief Determines whether an Open Location Code string is valid.
+ *
+ * Validates the given Open Location Code (OLC) string for decoding. An empty string is considered valid, whereas
+ * any code containing whitespace is deemed invalid.
+ *
+ * @param code The Open Location Code string to validate.
+ * @return True if the code is valid; otherwise, false.
+ */
+
+/**
+ * @brief Checks if an Open Location Code is a valid short code.
+ *
+ * Evaluates the provided code to determine if it qualifies as a short Open Location Code based on its length and
+ * formatting rules.
+ *
+ * @param code The Open Location Code string to check.
+ * @return True if the code is recognized as a short code; otherwise, false.
+ */
+
+/**
+ * @brief Validates that an Open Location Code is a complete (full) code.
+ *
+ * Confirms that the provided Open Location Code (OLC) is a full code by ensuring it is syntactically correct,
+ * decodes into legal latitude and longitude values, and adheres to formatting rules (e.g., prefix character and proper
+ * separator positioning).
+ *
+ * @param code The Open Location Code string to validate.
+ * @return True if the code is a valid full OLC; otherwise, false.
+ */
 namespace openlocationcode {
 
 // Encodes a pair of coordinates and return an Open Location Code representing a

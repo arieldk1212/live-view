@@ -16,6 +16,13 @@ protected:
   StringUnMap TestFieldsFirst;
   StringUnMap TestFieldsSecond;
 
+  /**
+   * @brief Sets up the test environment for database operations.
+   *
+   * Determines the appropriate database connection string based on whether the tests are running
+   * within GitHub Actions and initializes three DatabaseManager instances (Manager, Manager1,
+   * and Manager2) using that connection string. Also sets the default test table name to "Test".
+   */
   void SetUp() override {
     std::string TestDatabaseConnectionString;
     if (std::getenv("GITHUB_ACTIONS") != nullptr) {
@@ -31,6 +38,13 @@ protected:
     TestTableName = "Test";
   }
 
+  /**
+   * @brief Cleans up test fixtures after each test case.
+   *
+   * This method removes the test models ("Test" and "Test2") from the database, resets the shared pointers 
+   * managing database connections, and clears any field definition mappings. It ensures that each test starts 
+   * with a clean state.
+   */
   void TearDown() override {
     Manager->RemoveModel("Test");
     Manager1->RemoveModel("Test2");
@@ -296,6 +310,13 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
   EXPECT_NE(AfterData, PreData);
 }
 
+/**
+ * @brief Tests that deleting a record updates the model's data.
+ *
+ * The test creates a model with specific fields, inserts two records into it, and retrieves
+ * the data before deletion. It then deletes one record using a condition ("id=2") and retrieves
+ * the data afterwards, ensuring that the deletion has modified the data set.
+ */
 TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
   TestFieldsFirst.insert({
       {"id",
@@ -326,6 +347,18 @@ TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
   EXPECT_NE(AfterData, PreData);
 }
 
+/**
+ * @brief Benchmarks performance for key database operations.
+ *
+ * This test evaluates the performance of database operations using repeated
+ * insertions and data retrievals. It sets up a model with a specified schema on
+ * two database managers and measures:
+ * - The time taken to insert records into the model.
+ * - The time taken to retrieve data from a populated model.
+ * - The time taken to retrieve data from an empty model.
+ *
+ * Timing results for each operation are output to the standard output.
+ */
 TEST_F(DatabaseTest, DatabasePerformanceTest) {
   /**
    * @brief add more features and testing when needed.

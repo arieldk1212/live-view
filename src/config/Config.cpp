@@ -1,5 +1,15 @@
 #include "../../inc/Config/Config.h"
 
+/**
+ * @brief Reads and parses a JSON configuration file.
+ *
+ * Opens the file at the specified path and attempts to parse its contents as JSON.
+ * If the file cannot be opened or the JSON content is invalid, an error message is printed
+ * to standard error and an empty JSON object is returned.
+ *
+ * @param Path The path to the JSON configuration file.
+ * @return Json The JSON object parsed from the file, or an empty object if an error occurs.
+ */
 Json Config::ReadFile(const std::filesystem::path &Path) {
   try {
     std::ifstream f(Path);

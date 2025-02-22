@@ -15,6 +15,13 @@ public:
   explicit AddressModel(std::shared_ptr<DatabaseManager> &Manager);
   ~AddressModel() override;
 
+  /**
+   * @brief Retrieves the name of the database table associated with the model.
+   *
+   * This function returns a constant reference to the table name used for storing address-related data.
+   *
+   * @return const std::string& The name of the database table.
+   */
   [[nodiscard]] const std::string &GetTableName() const override {
     return m_TableName;
   }

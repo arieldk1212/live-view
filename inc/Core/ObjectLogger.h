@@ -6,8 +6,11 @@
 // TODO: write this into database, when accessible.
 
 /**
- * @brief wont be done now, not until we figure out elastic search and kibana structure.
- * add this to LogModel!
+ * @brief Abstract base class for logging messages.
+ *
+ * This class defines a common interface for logging operations. Derived classes must override
+ * the log() method to implement specific logging behaviors. The log() method accepts an rvalue
+ * reference to a std::string, allowing efficient transfer of the message data.
  */
 
 class InstanceLogger {

@@ -6,8 +6,17 @@
 #include <string>
 
 /**
- * @brief this file is responsible for the image, address geolocation,
- * verification, also verifying with a gps.
+ * @brief Encapsulates geolocation data and utilities.
+ *
+ * Initializes a geolocation object with specified latitude and longitude values.
+ * The class provides methods to retrieve the associated Plus Code and a formatted
+ * string of the coordinates. It is designed for applications requiring geolocation
+ * verification, such as image or address geolocation and basic GPS validation.
+ *
+ * @example
+ * Geolocation location(37.421998, -122.084);
+ * std::string plusCode = location.GetPlusCode();
+ * std::string coords = location.GetCoordinates();
  */
 
 class Geolocation {

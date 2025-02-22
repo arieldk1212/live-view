@@ -13,7 +13,177 @@
 
 /**
  * @class DatabaseManager
- * @brief Manges the database models and operations, in front of the db itself.
+ * @brief Manages database models and operations, interfacing with the underlying database.
+ */
+
+/**
+ * @brief Initializes the DatabaseManager with the provided database connection string.
+ *
+ * @param DatabaseConnectionString The connection string used to establish the database connection.
+ */
+
+/**
+ * @brief Destroys the DatabaseManager and releases resources associated with database models.
+ */
+
+/**
+ * @brief Checks whether the database connection is active.
+ *
+ * @return true if the database is connected; false otherwise.
+ */
+
+/**
+ * @brief Serializes the model fields for query preparation.
+ *
+ * Converts a mapping of field names and their values into a serialized string suitable for database queries.
+ *
+ * @param ModelFields Mapping of model fields to their corresponding values.
+ * @return A serialized string representation of the model fields.
+ */
+
+/**
+ * @brief Creates a new database model and its corresponding table.
+ *
+ * Uses the specified model name and field definitions to create a new database model along with its associated table.
+ *
+ * @param ModelName The name of the model/table to create.
+ * @param ModelFields Definitions of the fields for the model/table.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Removes the specified model and its associated table from the database.
+ *
+ * @param ModelName The name of the model/table to remove.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Clears all records from the specified table.
+ *
+ * @param ModelName The name of the table to truncate.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Retrieves all data from the specified model's table.
+ *
+ * @param ModelName The name of the model/table.
+ * @return The result set containing all records from the table.
+ */
+
+/**
+ * @brief Retrieves records from the specified model's table matching a field criterion.
+ *
+ * @param ModelName The name of the model/table.
+ * @param FieldName The field used for filtering records.
+ * @param FieldValue The value to match for the specified field.
+ * @return The result set containing the filtered records.
+ */
+
+/**
+ * @brief Adds a new column to an existing table.
+ *
+ * @param ModelName The name of the model/table.
+ * @param FieldName The name of the new column.
+ * @param FieldType The data type of the new column.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Removes a column from the specified table.
+ *
+ * @param ModelName The name of the model/table.
+ * @param FieldName The name of the column to remove.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Alters the data type of a column in the specified table.
+ *
+ * @param ModelName The name of the model/table.
+ * @param FieldName The name of the column to modify.
+ * @param NewFieldType The new data type for the column.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Inserts a new record into the specified table.
+ *
+ * @param ModelName The name of the model/table.
+ * @param Fields A mapping of field names to their values for the new record.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Updates the value of a single column in the specified table under a condition.
+ *
+ * @param ModelName The name of the model/table.
+ * @param FieldName The name of the column to update.
+ * @param NewFieldValue The new value to assign to the column.
+ * @param Condition The condition determining which record(s) to update.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Updates multiple columns in the specified table under a condition.
+ *
+ * @param ModelName The name of the model/table.
+ * @param Fields A mapping of field names to their new values.
+ * @param Condition The condition determining which record(s) to update.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Deletes a record from the specified table.
+ *
+ * Deletes the record(s) in the given table that satisfy the provided condition.
+ *
+ * @param ModelName The name of the model/table.
+ * @param Condition The condition used to identify which record(s) to delete.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Executes a create/read query on the specified table.
+ *
+ * This internal method performs query operations related to the model editor.
+ *
+ * @param TableName The name of the table.
+ * @param Query The SQL query to execute.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Creates a table with the specified fields.
+ *
+ * @param TableName The name of the table to create.
+ * @param TableFields A mapping of field names to their definitions.
+ * @return The result of the query execution.
+ */
+
+/**
+ * @brief Retrieves all data from the specified table.
+ *
+ * @param TableName The name of the table.
+ * @return The result set containing all records from the table.
+ */
+
+/**
+ * @brief Retrieves records from the specified table matching a field criterion.
+ *
+ * @param TableName The name of the table.
+ * @param TableFieldName The field used for filtering records.
+ * @param TableFieldValue The value to match for the specified field.
+ * @return The result set containing the filtered records.
+ */
+
+/**
+ * @brief Deletes a table using a specified query command.
+ *
+ * @param TableName The name of the table to delete.
+ * @param QueryCommand The command that determines how the table deletion is performed.
+ * @return The result of the query execution.
  */
 class DatabaseManager {
 public:

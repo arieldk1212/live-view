@@ -3,6 +3,20 @@
 #include <iomanip>
 #include <iostream>
 
+/**
+ * @brief Demonstrates the usage of the Open Location Code library.
+ *
+ * This function serves as the entry point of the program and shows how to:
+ * - Encode geographic coordinates into Plus+Codes, both with default and specified code lengths.
+ * - Decode a Plus+Code into its geographical area.
+ * - Validate whether a Plus+Code is valid, full, or short.
+ * - Shorten a Plus+Code relative to a reference location.
+ * - Recover the full Plus+Code from a shortened version using a reference location.
+ *
+ * The results of these operations are printed to the console.
+ *
+ * @return int Exit status (0 indicates successful execution).
+ */
 int main() {
   // Encodes latitude and longitude into a Plus+Code.
   std::string code = openlocationcode::Encode({47.0000625, 8.0000625});

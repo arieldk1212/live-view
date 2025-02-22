@@ -10,6 +10,15 @@ using StringUnMap = std::unordered_map<std::string, std::string>;
 
 class DatabaseManager;
 
+/**
+ * @brief Executes a SQL query using a non-transactional context.
+ *
+ * This function runs a SQL query through the m_DatabaseNonTransaction instance,
+ * which is optimized for read-only and create operations without requiring full transactional support.
+ *
+ * @param Query The SQL query string to be executed.
+ * @return pqxx::result The result set obtained from executing the query.
+ */
 class DatabaseConnection {
   /**
    * @warning This header file shouldn't be used directly!

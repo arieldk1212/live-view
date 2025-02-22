@@ -51,7 +51,18 @@ const std::array<int, 'X' - 'C' + 1> kPositionLUT = {
 
 namespace {
 
-// Raises a number to an exponent, handling negative exponents.
+/**
+ * @brief Computes the value of a base raised to a specified exponent.
+ *
+ * This function calculates the power by handling both positive and negative exponents.
+ * For a positive exponent, it returns the result of std::pow(base, exponent). For a 
+ * negative exponent, it returns the reciprocal of std::pow(base, -exponent). In the 
+ * case of an exponent of zero, the function returns 1.
+ *
+ * @param base The base number.
+ * @param exponent The exponent, which can be positive, negative, or zero.
+ * @return double The result of raising the base to the given exponent.
+ */
 double pow_neg(double base, double exponent) {
   if (exponent == 0) {
     return 1;
@@ -63,7 +74,16 @@ double pow_neg(double base, double exponent) {
 
 // Compute the latitude precision value for a given code length. Lengths <= 10
 // have the same precision for latitude and longitude, but lengths > 10 have
-// different precisions due to the grid method having fewer columns than rows.
+/**
+ * @brief Computes the geographic precision for a Plus Code based on its length.
+ *
+ * This function calculates the precision (in degrees) associated with a Plus Code by applying one of two formulas.
+ * For codes with 10 or fewer characters, it uses a power function based on the encoding base. For longer codes,
+ * it adjusts the precision further using an additional grid-based factor, accounting for the difference in grid dimensions.
+ *
+ * @param code_length The number of significant characters in the Plus Code.
+ * @return The computed precision in degrees.
+ */
 double compute_precision_for_length(int code_length) {
   if (code_length <= 10) {
     return pow_neg(internal::kEncodingBase, floor((code_length / -2) + 2));
@@ -71,7 +91,17 @@ double compute_precision_for_length(int code_length) {
   return pow_neg(internal::kEncodingBase, -3) / pow(5, code_length - 10);
 }
 
-// Returns the position of a char in the encoding alphabet, or -1 if invalid.
+/**
+ * @brief Retrieves the index of a character in the Plus Codes encoding alphabet.
+ *
+ * This function determines the position of the specified character within the encoding
+ * alphabet used for Plus Codes. It supports uppercase ('C' to 'X') and lowercase ('c' to 'x')
+ * alphabetic characters as well as numeric characters ('2' to '9'). If the character does not
+ * belong to any of these ranges, the function returns -1.
+ *
+ * @param c The character to locate in the encoding alphabet.
+ * @return int The position of the character in the encoding alphabet, or -1 if invalid.
+ */
 int get_alphabet_position(char c) {
   // We use a lookup table for performance reasons (e.g. over std::find).
   if (c >= 'C' && c <= 'X')
@@ -83,7 +113,14 @@ int get_alphabet_position(char c) {
   return -1;
 }
 
-// Normalize a longitude into the range -180 to 180, not including 180.
+/**
+ * @brief Normalizes a longitude value.
+ *
+ * Adjusts the input longitude (in degrees) to be within the range [-180, 180). If the longitude is less than -180, 360 degrees are repeatedly added; if it is 180 or greater, 360 degrees are repeatedly subtracted.
+ *
+ * @param longitude_degrees The longitude value in degrees to normalize.
+ * @return double The normalized longitude within the range [-180, 180).
+ */
 double normalize_longitude(double longitude_degrees) {
   while (longitude_degrees < -internal::kLongitudeMaxDegrees) {
     longitude_degrees = longitude_degrees + 360;
@@ -95,7 +132,17 @@ double normalize_longitude(double longitude_degrees) {
 }
 
 // Adjusts 90 degree latitude to be lower so that a legal OLC code can be
-// generated.
+/**
+ * @brief Adjusts a latitude value for Plus Code encoding.
+ *
+ * Clamps the input latitude to the valid range of [-90, 90] degrees. If the clamped latitude
+ * is at or near the maximum encoding limit, subtracts half the computed code precision (based
+ * on the provided code length) to ensure the value properly falls within the Plus Code grid area.
+ *
+ * @param latitude_degrees Input latitude in degrees.
+ * @param code_length Length of the Plus Code used to determine the precision offset.
+ * @return The adjusted latitude value.
+ */
 double adjust_latitude(double latitude_degrees, size_t code_length) {
   latitude_degrees = std::min(90.0, std::max(-90.0, latitude_degrees));
 
@@ -108,7 +155,16 @@ double adjust_latitude(double latitude_degrees, size_t code_length) {
   return latitude_degrees - precision / 2;
 }
 
-// Remove the separator and padding characters from the code.
+/**
+ * @brief Cleans a Plus Code string by removing its separator and padding characters.
+ *
+ * This function returns a new version of the provided Plus Code by removing all
+ * occurrences of the designated separator. If a padding character is found, the code
+ * is truncated at its first occurrence, discarding any subsequent characters.
+ *
+ * @param code The Plus Code string to sanitize.
+ * @return std::string The sanitized Plus Code, free of separators and padding.
+ */
 std::string clean_code_chars(const std::string &code) {
   std::string clean_code(code);
   clean_code.erase(
@@ -121,7 +177,22 @@ std::string clean_code_chars(const std::string &code) {
   return clean_code;
 }
 
-} // anonymous namespace
+} /**
+ * @brief Encodes a geographic location into a Plus Code of a specified digit length.
+ *
+ * This function normalizes the latitude and longitude from the given location and clamps the requested
+ * code length within the allowed minimum and maximum bounds. If the requested digit count is less than
+ * the required pair section or is an odd number below that threshold, it is adjusted to ensure proper evenness.
+ * The function then converts the normalized coordinates to integer values scaled by precision factors and
+ * constructs the Plus Code using integer arithmetic to avoid floating-point errors. Depending on the length,
+ * both a primary pair section and an optional grid section are generated, with the separator inserted at the
+ * appropriate position and padding added if necessary.
+ *
+ * @param location The geographic location to encode.
+ * @param code_length The desired number of digits for the Plus Code (excluding the separator). The value is clamped
+ *                    between the internal minimum and maximum allowed digit counts.
+ * @return A Plus Code string representing the given location, including the separator and any necessary padding.
+ */
 
 std::string Encode(const LatLng &location, size_t code_length) {
   // Limit the maximum number of digits in the code.
@@ -195,10 +266,31 @@ std::string Encode(const LatLng &location, size_t code_length) {
   return code.substr(0, internal::kSeparatorPosition + 1);
 }
 
+/**
+ * @brief Encodes a geographic location into a Plus Code using the default pair code length.
+ *
+ * This overload uses the standard pair code length defined by the Open Location Code specification
+ * (internal::kPairCodeLength) to generate a Plus Code for the provided location.
+ *
+ * @param location The geographic coordinate to encode.
+ * @return A string containing the Plus Code representing the geographic location.
+ */
 std::string Encode(const LatLng &location) {
   return Encode(location, internal::kPairCodeLength);
 }
 
+/**
+ * @brief Decodes a Plus Code into its corresponding geographic area.
+ *
+ * This function processes a Plus Code string by first removing separators and padding characters,
+ * then decoding its normal pair section and any extra precision grid digits to compute the geographic
+ * boundaries. It returns a CodeArea that contains the lower and upper latitude and longitude bounds,
+ * along with the effective code length used for decoding. If the input code exceeds the maximum allowed
+ * length, it is truncated accordingly.
+ *
+ * @param code The Plus Code string to decode.
+ * @return CodeArea The geographic area corresponding to the decoded Plus Code.
+ */
 CodeArea Decode(const std::string &code) {
   std::string clean_code = clean_code_chars(code);
   // Constrain to the maximum length.
@@ -262,6 +354,22 @@ CodeArea Decode(const std::string &code) {
                   clean_code.size());
 }
 
+/**
+ * @brief Attempts to shorten a full Plus Code based on a reference location.
+ *
+ * This function shortens a full Plus Code by removing its leading characters if the provided
+ * reference location is sufficiently close to the code's geographic center. It first verifies that 
+ * the input is a full Plus Code without padding characters; if not, the original code is returned.
+ * The code is then decoded to determine its center, and the reference location is adjusted for
+ * proper latitude and longitude bounds. If the distance between the adjusted reference location
+ * and the code center falls within a safe margin based on the code's precision, a prefix of the code 
+ * is removed to produce a shorter version.
+ *
+ * @param code The full Plus Code to potentially shorten.
+ * @param reference_location The geographic reference location used to assess shortening eligibility.
+ * @return std::string A shortened Plus Code if the reference location is close to the code center;
+ *         otherwise, the original code is returned.
+ */
 std::string Shorten(const std::string &code, const LatLng &reference_location) {
   if (!IsFull(code)) {
     return code;
@@ -295,6 +403,21 @@ std::string Shorten(const std::string &code, const LatLng &reference_location) {
   return code_copy;
 }
 
+/**
+ * @brief Recovers a full Plus Code from a shortened code.
+ *
+ * Given a shortened Plus Code and a reference location, this function reconstructs the full
+ * Plus Code by inferring the missing digits. If the provided code is already a full Plus Code,
+ * it is normalized to uppercase and returned directly.
+ *
+ * When recovering a short code, the function determines the necessary padding length based on the
+ * position of the separator, computes the resolution of the padded area, and adjusts the resulting
+ * code's center if it deviates significantly from the reference location.
+ *
+ * @param short_code The short Plus Code that may be missing prefix characters.
+ * @param reference_location The geographic coordinates used to guide the recovery of missing data.
+ * @return std::string The full Plus Code corresponding to the recovered geographic area.
+ */
 std::string RecoverNearest(const std::string &short_code,
                            const LatLng &reference_location) {
   if (!IsShort(short_code)) {
@@ -346,6 +469,18 @@ std::string RecoverNearest(const std::string &short_code,
   return Encode(center_latlng, CodeLength(short_code) + padding_length);
 }
 
+/**
+ * @brief Validates the formatting of a Plus Code.
+ *
+ * This function checks whether the provided Plus Code string adheres to the
+ * required structure. It ensures that the code is not empty, contains exactly one
+ * properly positioned separator, and that any padding characters (if present)
+ * follow the correct rules. Additionally, it verifies that all characters,
+ * excluding the separator and padding, belong to the valid encoding alphabet.
+ *
+ * @param code The Plus Code string to validate.
+ * @return true if the Plus Code is structurally valid; false otherwise.
+ */
 bool IsValid(const std::string &code) {
   if (code.empty()) {
     return false;
@@ -411,6 +546,16 @@ bool IsValid(const std::string &code) {
   return true;
 }
 
+/**
+ * @brief Determines if the provided Plus Code string is a shortened code.
+ *
+ * This function first checks whether the Plus Code is valid. If the code is valid,
+ * it then verifies whether the number of characters before the designated separator 
+ * is less than the standard expected length, which indicates a shortened code.
+ *
+ * @param code Plus Code string to evaluate.
+ * @return true if the Plus Code is shortened; false if it is either invalid or a full code.
+ */
 bool IsShort(const std::string &code) {
   // Check it's valid.
   if (!IsValid(code)) {
@@ -423,6 +568,18 @@ bool IsShort(const std::string &code) {
   return false;
 }
 
+/**
+ * @brief Checks if the provided Plus Code is a complete (full) code.
+ *
+ * This function determines whether a Plus Code qualifies as a full code by ensuring:
+ * - The code is valid according to Plus Code standards.
+ * - It is not a short code.
+ * - Its first character (and the second, if present) indicate latitude and longitude values
+ *   that decode within acceptable geographic bounds (latitude below 90° and longitude below 180°).
+ *
+ * @param code A Plus Code string to evaluate.
+ * @return true if the code is complete and valid as a full Plus Code; false otherwise.
+ */
 bool IsFull(const std::string &code) {
   if (!IsValid(code)) {
     return false;
@@ -450,6 +607,15 @@ bool IsFull(const std::string &code) {
   return true;
 }
 
+/**
+ * @brief Calculates the length of a Plus Code after removing any formatting characters.
+ *
+ * This function cleans the input Plus Code by removing separators and padding characters,
+ * then returns the length of the resulting string containing only significant code characters.
+ *
+ * @param code The Plus Code string to be processed, which may include formatting characters.
+ * @return size_t The number of significant characters in the cleaned Plus Code.
+ */
 size_t CodeLength(const std::string &code) {
   std::string clean_code = clean_code_chars(code);
   return clean_code.size();
