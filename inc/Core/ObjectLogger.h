@@ -1,5 +1,5 @@
-#ifndef INSTANCE_LOGGER_H
-#define INSTANCE_LOGGER_H
+#ifndef OBJECT_LOGGER_H
+#define OBJECT_LOGGER_H
 
 #include <string>
 
@@ -7,7 +7,7 @@
 
 /**
  * @brief wont be done now, not until we figure out elastic search and kibana structure.
- * 
+ * add this to LogModel!
  */
 
 class InstanceLogger {

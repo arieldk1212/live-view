@@ -2,14 +2,17 @@
 #include "../../Test.h"
 
 #include <future>
+#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>
 
 class DatabaseTest : public ::testing::Test {
 protected:
-  std::string TestTableName;
   std::shared_ptr<DatabaseManager> Manager;
+  std::shared_ptr<DatabaseManager> Manager1;
+  std::shared_ptr<DatabaseManager> Manager2;
+  std::string TestTableName;
   StringUnMap TestFieldsFirst;
   StringUnMap TestFieldsSecond;
 
@@ -22,13 +25,18 @@ protected:
       TestDatabaseConnectionString =
           Config::TestDatabaseToString("../../configs/config.json");
     }
+    Manager1 = std::make_shared<DatabaseManager>(TestDatabaseConnectionString);
+    Manager2 = std::make_shared<DatabaseManager>(TestDatabaseConnectionString);
     Manager = std::make_shared<DatabaseManager>(TestDatabaseConnectionString);
     TestTableName = "Test";
   }
 
   void TearDown() override {
     Manager->RemoveModel("Test");
+    Manager1->RemoveModel("Test2");
     Manager.reset();
+    Manager1.reset();
+    Manager2.reset();
     TestFieldsFirst.clear();
     TestFieldsSecond.clear();
   }
@@ -282,7 +290,84 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
   Manager->InsertInto(TestTableName, Data);
   auto PreData = Manager->GetModelData(TestTableName);
   Manager->UpdateColumns(TestTableName, NewFields, "id=1");
+  auto size = NewFields.size();
   auto AfterData = Manager->GetModelData(TestTableName);
 
   EXPECT_NE(AfterData, PreData);
+}
+
+TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
+  TestFieldsFirst.insert({
+      {"id",
+       DatabaseCommandToString(DatabaseFieldCommands::SerialPrimaryKeyField)},
+      {"addressname",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
+      {"addresslocation",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
+      {"addressnumber",
+       DatabaseCommandToString(DatabaseFieldCommands::IntField)},
+  });
+
+  StringUnMap Data1 = {{"addressname", "rami"},
+                       {"addresslocation", "levi"},
+                       {"addressnumber", "18"},
+                       {"id", "1"}};
+
+  StringUnMap Data2 = {
+      {"addressname", "new"}, {"addresslocation", "fields"}, {"id", "2"}};
+
+  auto MethodResponse = Manager->AddModel(TestTableName, TestFieldsFirst);
+  Manager->InsertInto(TestTableName, Data1);
+  Manager->InsertInto(TestTableName, Data2);
+  auto PreData = Manager->GetModelData(TestTableName);
+  Manager->DeleteRecord(TestTableName, "id=2");
+  auto AfterData = Manager->GetModelData(TestTableName);
+
+  EXPECT_NE(AfterData, PreData);
+}
+
+TEST_F(DatabaseTest, DatabasePerformanceTest) {
+  /**
+   * @brief add more features and testing when needed.
+   */
+  TestFieldsFirst.insert({
+      {"id",
+       DatabaseCommandToString(DatabaseFieldCommands::SerialPrimaryKeyField)},
+      {"addressname",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
+      {"addressnumber",
+       DatabaseCommandToString(DatabaseFieldCommands::IntField)},
+  });
+
+  StringUnMap Data = {{"addressname", "rami"},
+                      {"addresslocation", "levi"},
+                      {"addressnumber", "18"},
+                      {"id", "1"}};
+
+  Manager->AddModel(TestTableName, TestFieldsFirst);
+  Manager1->AddModel("Test2", TestFieldsFirst);
+  constexpr int LOOPS = 10000;
+  std::cout << "Insert Into Time:\n";
+  {
+    Benchmark here;
+    for (int i = 0; i < LOOPS; i++) {
+      Manager->InsertInto(TestTableName, Data);
+    }
+  }
+  std::cout << "Get Data Time:\n";
+  {
+    Benchmark here;
+    for (int i = 0; i < LOOPS; i++) {
+      Manager->GetModelData(TestTableName);
+    }
+  }
+  std::cout << "Get Empty Model Data Time:\n";
+  {
+    Benchmark andhere;
+    for (int i = 0; i < LOOPS; i++) {
+      Manager1->GetModelData(TestTableName);
+    }
+  }
+
+  EXPECT_EQ(1, 1);
 }

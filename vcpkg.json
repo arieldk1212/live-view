@@ -5,7 +5,6 @@
     "libpqxx",
     "spdlog",
     "gtest",
-    "benchmark",
     "nlohmann-json"
   ]
 }

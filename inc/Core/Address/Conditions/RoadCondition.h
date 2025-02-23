@@ -1,7 +1,7 @@
 #ifndef ROAD_CONDITION_H
 #define ROAD_CONDITION_H
 
-#include "../Condition.h"
+#include "Condition.h"
 
 class RoadCondition : public Condition {
 public:

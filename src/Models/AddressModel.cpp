@@ -13,11 +13,26 @@ AddressModel::~AddressModel() {
 }
 
 pqxx::result AddressModel::Init() {
-  APP_INFO("ADDRESS TABLE CREATED VIA ADDRESS MODEL");
+  APP_INFO("ADDRESS TABLE CREATED");
   return m_DatabaseManager->AddModel(m_TableName, m_AddressFields);
 }
 
-pqxx::result AddressModel::Add(const StringUnMap &Fields) {
-  auto Result = m_DatabaseManager->InsertInto(m_TableName, Fields);
-  return Result;
+pqxx::result AddressModel::Add(StringUnMap Fields) {
+  Fields.emplace("entities", "{test1, test2}");
+
+  return m_DatabaseManager->InsertInto(m_TableName, Fields);
+}
+
+pqxx::result AddressModel::Update(const StringUnMap &Fields,
+                                  const std::string &Condition) {
+  if (Fields.size() == 1) {
+    auto field = Fields.begin();
+    return m_DatabaseManager->UpdateColumn(m_TableName, field->first,
+                                           field->second, Condition);
+  }
+  return m_DatabaseManager->UpdateColumns(m_TableName, Fields, Condition);
+}
+
+pqxx::result AddressModel::Delete(const std::string &Condition) {
+  return m_DatabaseManager->DeleteRecord(m_TableName, Condition);
 }

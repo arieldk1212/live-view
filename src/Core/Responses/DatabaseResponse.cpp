@@ -1,4 +1,4 @@
-#include "../../../inc/Core/Responses/Response.h"
+#include "../../../inc/Core/Responses/DatabaseResponse.h"
 
 template <typename ResType> Response<ResType>::~Response() {}
 
@@ -13,11 +13,7 @@ DBResponse::DBResponse(pqxx::result &&ResponseData)
   APP_INFO("Response Size -> " + std::to_string(m_ResponseSize));
 }
 
-DBResponse::DoubleDuration
-DBResponse::RunBenchmark(std::function<void()> Func) {
-  auto start = Clock::now();
+void DBResponse::RunBenchmark(std::function<void()> Func) {
+  Benchmark here;
   Func();
-  auto end = Clock::now();
-  auto duration = end - start;
-  return duration;
 }

@@ -16,15 +16,10 @@ enum class DatabaseFieldCommands {
   SerialPrimaryKeyField,
   IntField,
   CharField,
-  VarChar100Field
+  VarChar100Field,
+  TextArray,
+  UUID
 };
-
-const std::unordered_map<DatabaseFieldCommands, std::string>
-    DatabaseFieldStrings = {
-        {DatabaseFieldCommands::SerialPrimaryKeyField, "serial primary key"},
-        {DatabaseFieldCommands::IntField, "int"},
-        {DatabaseFieldCommands::CharField, "char"},
-        {DatabaseFieldCommands::VarChar100Field, "varchar(100)"}};
 
 enum class DatabaseQueryCommands {
   SelectAll,
@@ -44,6 +39,15 @@ enum class DatabaseQueryCommands {
   DropDrop,
   DropTruncate,
 };
+
+const std::unordered_map<DatabaseFieldCommands, std::string>
+    DatabaseFieldStrings = {
+        {DatabaseFieldCommands::SerialPrimaryKeyField, "serial primary key"},
+        {DatabaseFieldCommands::IntField, "int"},
+        {DatabaseFieldCommands::CharField, "char"},
+        {DatabaseFieldCommands::VarChar100Field, "varchar(100)"},
+        {DatabaseFieldCommands::UUID, "uuid DEFAULT gen_random_uuid()"},
+        {DatabaseFieldCommands::TextArray, "text[]"}};
 
 const std::unordered_map<DatabaseQueryCommands, std::string>
     DatabaseQueryCommandsStrings = {
@@ -65,8 +69,8 @@ const std::unordered_map<DatabaseQueryCommands, std::string>
         {DatabaseQueryCommands::DropDrop, "drop table "},
         {DatabaseQueryCommands::DropTruncate, "truncate table "}};
 
-template <typename DatabaseCommand>
-constexpr std::string DatabaseCommandToString(DatabaseCommand Command) {
+template <typename DatabaseCommandType>
+constexpr std::string DatabaseCommandToString(DatabaseCommandType Command) {
   if constexpr (std::is_same_v<decltype(Command), DatabaseFieldCommands>) {
     auto it = DatabaseFieldStrings.find(Command);
     if (it != DatabaseFieldStrings.end()) {

@@ -11,13 +11,12 @@
 #include <type_traits>
 #include <utility>
 
-using StringUnMap = std::unordered_map<std::string, std::string>;
-
 /**
  * @class DatabaseManager
  * @brief Manges the database models and operations, in front of the db itself.
  */
 class DatabaseManager {
+public:
 public:
   /**
    * @brief Constructs the DatabaseManager object, according to the database's
@@ -40,7 +39,7 @@ public:
    * @brief check the status of the database connection.
    * @return bool
    */
-  bool IsDatabaseConnected();
+  bool IsDatabaseConnected() const;
 
   /**
    * @brief  serializes the fields of the model, query preparation.
@@ -87,7 +86,6 @@ public:
   pqxx::result GetModelData(const std::string &ModelName,
                             const std::string &FieldName,
                             const std::string &FieldValue);
-
   /**
    * @brief add fields to an existing table.
    * @param ModelName string, name of the model/table.
@@ -115,12 +113,6 @@ public:
   pqxx::result AlterColumn(const std::string &ModelName,
                            const std::string &FieldName,
                            const std::string &NewFieldType);
-
-  /** @brief not in usage, better to delete the model than change all.
-  pqxx::result SwapAllColumns(const std::string &ModelName,
-                              const StringUnMap &ModelFields);
-  */
-
   /**
    * @brief inserts data to the table's database.
    * @param ModelName
@@ -152,6 +144,13 @@ public:
   pqxx::result UpdateColumns(const std::string &ModelName,
                              const StringUnMap &Fields,
                              const std::string &Condition);
+  /**
+   * @brief delete a record from the table.
+   * @param ModelName
+   * @param Condition
+   */
+  pqxx::result DeleteRecord(const std::string &ModelName,
+                            const std::string &Condition);
 
 private:
   /**
@@ -173,7 +172,7 @@ private:
 private:
   bool m_IsConnected;
   std::string m_DatabaseConnectionString;
-  std::shared_ptr<DatabaseConnection> m_DatabaseManager;
+  std::unique_ptr<DatabaseConnection> m_DatabaseManager;
 
 private:
   /** @brief to create the connection pool we need, create a new connection,
@@ -187,20 +186,22 @@ private:
  * still in development.
  * @todo implement this class, adjust connections accordingly, study about
  * pool's more.
-class DatabaseConnectionPoolManager {
-public:
-  void CreateConnection();
-  void AddConnection(std::shared_ptr<DatabaseConnection> Connection);
-  void RemoveConnection(std::shared_ptr<DatabaseConnection> Connection);
-  std::shared_ptr<DatabaseConnection> LockConnection();
+ */
 
-private:
-  size_t m_PoolSize;
-  std::string m_DatabaseConnectionString;
-  std::vector<std::unique_ptr<DatabaseConnection>> m_DatabaseConnectionPool;
-  std::mutex m_DatabaseConnectionPoolMutex;
-};
-*/
+// class DBManager {
+// public:
+//   DBManager(std::string &&ConnectionString) noexcept;
+//   ~DBManager() = default;
 
+//   void AddConnection(std::unique_ptr<DatabaseConnection> Connection);
+//   void RemoveConnection(std::unique_ptr<DatabaseConnection> Connection);
+//   std::unique_ptr<DatabaseConnection> LockConnection();
+
+// private:
+//   size_t m_DatabaseConntectionPoolSize;
+//   std::mutex m_DatabaseConnectionPoolMutex;
+//   std::string m_DatabaseConnectionString;
+//   std::vector<std::unique_ptr<DatabaseManager>> m_DatabaseConnectionPool;
+// };
 
 #endif

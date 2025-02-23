@@ -31,7 +31,7 @@
 *.out
 *.app
 
-# Project Generated
+# Project Auto Generated
 build
 .cache
 .DS_Store

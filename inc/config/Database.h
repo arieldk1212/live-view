@@ -6,6 +6,8 @@
 #include <mutex>
 #include <pqxx/pqxx>
 
+using StringUnMap = std::unordered_map<std::string, std::string>;
+
 class DatabaseManager;
 
 class DatabaseConnection {
@@ -36,20 +38,13 @@ private:
    */
   pqxx::result CrQuery(const std::string &Query);
 
-  /**
-   * @brief query function that's based on a transaction, via the
-   * m_DatabaseWorker, created for update and delete operetions, currently
-   * disabled due to no usage.
-   * @param Query
-   * @return pqxx::result
-   */
-  // pqxx::result UQuery(const std::string &Query);
-
 private:
   std::mutex m_DatabaseMutex;
   pqxx::connection m_DatabaseConnection;
   pqxx::nontransaction m_DatabaseNonTransaction;
-  // pqxx::work m_DatabaseWorker{m_DatabaseConnection};
+  // pqxx::transaction<pqxx::isolation_level::read_committed,
+  // pqxx::write_policy::read_write>
+  // m_DatabaseNonTransaction;
 };
 
 #endif

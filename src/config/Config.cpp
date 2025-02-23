@@ -7,7 +7,6 @@ Json Config::ReadFile(const std::filesystem::path &Path) {
       throw std::ios_base::failure("Unable To Open Config File.");
     }
     auto Data = Json::parse(f);
-    // f.close();
     return Data;
   } catch (const Json::exception &e) {
     std::cerr << "JSON PARSING ERROR - " << e.what();

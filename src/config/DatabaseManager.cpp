@@ -1,14 +1,14 @@
 #include "../../inc/Config/DatabaseManager.h"
 
 DatabaseManager::DatabaseManager(const std::string &DatabaseConnectionString)
-    : m_IsConnected(true) {
+    : m_IsConnected(1) {
   if (DatabaseConnectionString.empty()) {
     APP_CRITICAL("DATABASE MANAGER ERROR - EMPTY CONNECTION STRING");
     throw std::invalid_argument("Database Connection String Empty.");
   }
   m_DatabaseConnectionString = DatabaseConnectionString;
   m_DatabaseManager =
-      std::make_shared<DatabaseConnection>(m_DatabaseConnectionString);
+      std::make_unique<DatabaseConnection>(m_DatabaseConnectionString);
   APP_INFO("DATABASE MANAGER CREATED");
 }
 
@@ -18,7 +18,7 @@ DatabaseManager::~DatabaseManager() {
   APP_CRITICAL("DATABASE MANAGER DESTROYED");
 }
 
-bool DatabaseManager::IsDatabaseConnected() {
+bool DatabaseManager::IsDatabaseConnected() const {
   return m_DatabaseManager->IsDatabaseConnected();
 }
 
@@ -168,21 +168,17 @@ pqxx::result DatabaseManager::UpdateColumns(const std::string &ModelName,
   return MCrQuery(ModelName, query);
 }
 
-// pqxx::result DatabaseManager::MUQuery(const std::string &TableName,
-//                                     const std::string &query) {
-//   try {
-//     auto Response = m_DatabaseManager->UQuery(query);
-//     APP_INFO("UQUERRY COMMITTED AT - " + TableName);
-//     return Response;
-//   } catch (pqxx::sql_error const &e) {
-//     APP_ERROR("UQUERY ERROR AT TABLE - " + TableName + " " +
-//               std::string(e.what()));
-//     return {};
-//   } catch (std::exception const &e) {
-//     APP_ERROR("UQUERY GENERAL ERROR - " + std::string(e.what()));
-//     return {};
-//   }
-// }
+pqxx::result DatabaseManager::DeleteRecord(const std::string &ModelName,
+                                           const std::string &Condition) {
+  std::string query;
+  query.append("delete from ")
+      .append(ModelName)
+      .append(" where ")
+      .append(Condition)
+      .append(";");
+  APP_INFO("RECORD DATA DELETED IN - " + ModelName);
+  return MCrQuery(ModelName, query);
+}
 
 pqxx::result DatabaseManager::MCrQuery(const std::string &TableName,
                                        const std::string &query) {
@@ -270,3 +266,12 @@ pqxx::result DatabaseManager::DeleteTable(const std::string &TableName,
     return {};
   }
 }
+
+/*************************/
+
+// DBManager::DBManager(std::string &&ConnectionString) noexcept
+//     : m_DatabaseConntectionPoolSize{1},
+//       m_DatabaseConnectionString{std::move(ConnectionString)} {
+//   m_DatabaseConnectionPool.emplace_back(
+//       std::make_unique<DatabaseManager>(m_DatabaseConnectionString));
+// }
