@@ -256,11 +256,14 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnTest) {
                       {"addresslocation", "levi"},
                       {"addressnumber", "18"},
                       {"id", "1"}};
+  pqxx::params params;
 
   auto MethodResponse = Manager->AddModel(TestTableName, TestFieldsFirst);
   Manager->InsertInto(TestTableName, Data);
   auto PreData = Manager->GetModelData(TestTableName);
-  Manager->UpdateColumn(TestTableName, "addressname", "holon", "id=1");
+  params.append("holon");
+  params.append(1);
+  Manager->UpdateColumn(TestTableName, "addressname", "id", params);
   auto AfterData = Manager->GetModelData(TestTableName);
 
   EXPECT_NE(AfterData, PreData);
@@ -285,12 +288,15 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
 
   StringUnMap NewFields = {{"addressname", "new"},
                            {"addresslocation", "fields"}};
-
+  pqxx::params params;
+  
   auto MethodResponse = Manager->AddModel(TestTableName, TestFieldsFirst);
   Manager->InsertInto(TestTableName, Data);
   auto PreData = Manager->GetModelData(TestTableName);
-  Manager->UpdateColumns(TestTableName, NewFields, "id=1");
-  auto size = NewFields.size();
+  params.append("new");
+  params.append("fields");
+  params.append(1);
+  Manager->UpdateColumns(TestTableName, NewFields, "id", params);
   auto AfterData = Manager->GetModelData(TestTableName);
 
   EXPECT_NE(AfterData, PreData);
@@ -320,7 +326,7 @@ TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
   Manager->InsertInto(TestTableName, Data1);
   Manager->InsertInto(TestTableName, Data2);
   auto PreData = Manager->GetModelData(TestTableName);
-  Manager->DeleteRecord(TestTableName, "id=2");
+  Manager->DeleteRecord(TestTableName, "id", 2);
   auto AfterData = Manager->GetModelData(TestTableName);
 
   EXPECT_NE(AfterData, PreData);

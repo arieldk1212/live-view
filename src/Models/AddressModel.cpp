@@ -22,17 +22,3 @@ pqxx::result AddressModel::Add(StringUnMap Fields) {
 
   return m_DatabaseManager->InsertInto(m_TableName, Fields);
 }
-
-pqxx::result AddressModel::Update(const StringUnMap &Fields,
-                                  const std::string &Condition) {
-  if (Fields.size() == 1) {
-    auto field = Fields.begin();
-    return m_DatabaseManager->UpdateColumn(m_TableName, field->first,
-                                           field->second, Condition);
-  }
-  return m_DatabaseManager->UpdateColumns(m_TableName, Fields, Condition);
-}
-
-pqxx::result AddressModel::Delete(const std::string &Condition) {
-  return m_DatabaseManager->DeleteRecord(m_TableName, Condition);
-}

@@ -6,15 +6,15 @@
 
 #include <chrono>
 
-class LogModel : public BaseModel {
+class LogModel final {
 public:
   explicit LogModel(std::shared_ptr<DatabaseManager> &Manager);
-  ~LogModel() override;
+  ~LogModel();
 
-  const std::string &GetTableName() const override { return m_TableName; }
+  const std::string &GetTableName() const { return m_TableName; }
 
-  pqxx::result Init() override;
-  // pqxx::result Add(const StringUnMap &Fields) override;
+  pqxx::result Init();
+  pqxx::result Add(const StringUnMap &Fields);
 
 private:
   std::shared_ptr<DatabaseManager> m_DatabaseManager;

@@ -17,3 +17,6 @@ shhhhhhhhhhh
 * configure postgres service and pg-admin locally - using the same variables -> in .env, see .env.example
 * ctest -R <test_name>
 * ./test_name --gtest_filter=Test.TestName
+
+## Building For Xcode
+* in build dir -> cmake -G Xcode ..

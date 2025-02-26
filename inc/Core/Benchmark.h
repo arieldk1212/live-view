@@ -14,7 +14,13 @@ public:
   Benchmark() { m_StartPoint = Clock::now(); }
   ~Benchmark() { Stop(); }
 
-  void Stop() {
+  Benchmark(const Benchmark &) = delete;
+  Benchmark &operator=(const Benchmark &) = delete;
+
+  Benchmark(Benchmark &&) = delete;
+  Benchmark &operator=(Benchmark &&) = delete;
+
+  float Stop() {
     auto EndPoint = Clock::now();
 
     auto Start =
@@ -27,6 +33,7 @@ public:
 
     auto Result = static_cast<float>(End - Start) * ms;
     std::cout << "BENCHMARK RESULT -> " << Result << "ms\n";
+    return Result;
   }
 
 private:

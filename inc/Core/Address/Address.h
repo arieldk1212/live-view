@@ -17,7 +17,7 @@ public:
                        QueryCondition); /* condition of which address to get. */
   ~Address() = default;
 
-  const void GetEntities(const std::string &QueryCondition);
+  const std::vector<std::string> GetEntities(const std::string &QueryCondition);
   void ChangeEntities(std::shared_ptr<DatabaseManager> &Manager);
 
 private:

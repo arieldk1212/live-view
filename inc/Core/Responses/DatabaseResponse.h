@@ -3,7 +3,7 @@
 
 #include "Response.h"
 
-class DBResponse : Response<pqxx::result> {
+class DBResponse : public Response<pqxx::result> {
 public:
   explicit DBResponse(const pqxx::result &ResponseData);
   explicit DBResponse(pqxx::result &&ResponseData);

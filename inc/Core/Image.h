@@ -19,6 +19,10 @@ public:
   ~Image();
 
   void Init();
+  bool UploadToS3();
+  bool DeleteFromS3();
+  const std::string GetS3URL() const { return m_ImageURL; }
+  const std::filesystem::path GetImagePath() const { return m_ImageFolderPath; }
 
 private:
   StringUnMap m_ImageRelation;

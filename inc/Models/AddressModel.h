@@ -5,7 +5,7 @@
 #include "BaseModel.h"
 #include "Config/DatabaseCommands.h"
 
-class AddressModel final : public BaseModel {
+class AddressModel final {
   /**
    * @brief in here we need to init a logger for a certain address!
    * separate here to entites and make a list inside the model of the data? if
@@ -13,17 +13,39 @@ class AddressModel final : public BaseModel {
    */
 public:
   explicit AddressModel(std::shared_ptr<DatabaseManager> &Manager);
-  ~AddressModel() override;
+  ~AddressModel();
 
-  [[nodiscard]] const std::string &GetTableName() const override {
-    return m_TableName;
+  [[nodiscard]] const std::string &GetTableName() const { return m_TableName; }
+
+  pqxx::result Init();
+
+  pqxx::result Add(StringUnMap Fields);
+
+  template <typename T>
+  pqxx::result Update(const StringUnMap &Fields, const std::string &Condition,
+                      T &&arg) {
+    pqxx::params params;
+    if (Fields.size() == 1) {
+      auto field = Fields.begin();
+      params.append(field->second);
+      params.append(std::forward<T>(arg));
+      return m_DatabaseManager->UpdateColumn(m_TableName, field->first,
+                                             Condition, params);
+    }
+    for (const auto &[key, value] : Fields) {
+      params.append(value);
+    }
+    params.append(std::forward<T>(arg));
+    return m_DatabaseManager->UpdateColumns(m_TableName, Fields, Condition,
+                                            params);
   }
 
-  pqxx::result Init() override;
-  pqxx::result Add(StringUnMap Fields) override;
-  pqxx::result Update(const StringUnMap &Fields,
-                      const std::string &Condition) override;
-  pqxx::result Delete(const std::string &Condition) override;
+  template <typename T>
+  pqxx::result Delete(const std::string &Condition, T &&arg) {
+    pqxx::params params;
+    params.append(std::forward<T>(arg));
+    return m_DatabaseManager->DeleteRecord(m_TableName, Condition, params);
+  }
 
   std::optional<Address> GetEntity(const std::string &Condition);
 

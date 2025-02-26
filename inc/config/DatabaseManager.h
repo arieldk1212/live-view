@@ -17,7 +17,6 @@
  */
 class DatabaseManager {
 public:
-public:
   /**
    * @brief Constructs the DatabaseManager object, according to the database's
    * connection string.
@@ -80,12 +79,14 @@ public:
    * @brief Get the specifig Model Data object from the database.
    * @param ModelName
    * @param FieldName
-   * @param FieldValue
+   * @param template <T>arg
    * @return pqxx::result
    */
+  template <typename T>
   pqxx::result GetModelData(const std::string &ModelName,
-                            const std::string &FieldName,
-                            const std::string &FieldValue);
+                            const std::string &FieldName, T &&arg) {
+    return GetTableData(ModelName, FieldName, std::forward<T>(arg));
+  }
   /**
    * @brief add fields to an existing table.
    * @param ModelName string, name of the model/table.
@@ -125,32 +126,36 @@ public:
    * @brief updates the table's field value with a specific condition.
    * @param ModelName
    * @param FieldName
-   * @param NewFieldValue
    * @param Condition
+   * @param Params
    * @return pqxx::result
    */
   pqxx::result UpdateColumn(const std::string &ModelName,
                             const std::string &FieldName,
-                            const std::string &NewFieldValue,
-                            const std::string &Condition);
+                            const std::string &Condition,
+                            const pqxx::params &Params);
   /**
    * @brief updates the table's multiple fields values with a specific
    * condition.
    * @param ModelName
    * @param Fields
    * @param Condition
+   * @param Params
    * @return pqxx::result
    */
   pqxx::result UpdateColumns(const std::string &ModelName,
                              const StringUnMap &Fields,
-                             const std::string &Condition);
+                             const std::string &Condition,
+                             const pqxx::params &Params);
   /**
    * @brief delete a record from the table.
    * @param ModelName
    * @param Condition
+   * @param Params
    */
   pqxx::result DeleteRecord(const std::string &ModelName,
-                            const std::string &Condition);
+                            const std::string &Condition,
+                            const pqxx::params &Params);
 
 private:
   /**
@@ -158,16 +163,49 @@ private:
    * model editor above and in DatabaseModel.
    */
   pqxx::result MCrQuery(const std::string &TableName, const std::string &Query);
+  /**
+   * @brief overload for the function, improving security issues when needed
+   * user input.
+   */
+  template <typename... Args>
+  pqxx::result MCrQuery(const std::string &TableName, const std::string &Query,
+                        Args &&...args) {
+    try {
+      pqxx::result Response =
+          m_DatabaseManager->CrQuery(Query, std::forward<Args>(args)...);
+      return Response;
+    } catch (pqxx::sql_error const &e) {
+      APP_ERROR("MCRQUERY(PF) ERROR AT TABLE - " + TableName + " " +
+                std::string(e.what()));
+      return {};
+    } catch (std::exception const &e) {
+      APP_ERROR("MCRQUERY(PF) GENERAL ERROR - " + std::string(e.what()));
+      return {};
+    }
+  }
+  pqxx::result MWQuery(const std::string &TableName, const std::string &Query);
   pqxx::result CreateTable(const std::string &TableName,
                            const StringUnMap &TableFields);
   pqxx::result GetTableData(const std::string &TableName);
+  template <typename T>
   pqxx::result GetTableData(const std::string &TableName,
-                            const std::string &TableFieldName,
-                            const std::string &TableFieldValue);
+                            const std::string &TableFieldName, T &&arg) {
+    std::string query;
+    query.append(DatabaseCommandToString(DatabaseQueryCommands::SelectAll))
+        .append(TableName)
+        .append(" where ")
+        .append(TableFieldName)
+        .append("=$1");
+    try {
+      return MCrQuery(TableName, query, std::forward<T>(arg));
+    } catch (const std::exception &e) {
+      APP_ERROR("ERROR AT GETTABLEDATA2 FUNCTION - " + TableName + " - " +
+                std::string(e.what()));
+      return {};
+    }
+  }
   pqxx::result DeleteTable(const std::string &TableName,
                            DatabaseQueryCommands QueryCommand);
-  // pqxx::result MUQuery(const std::string &TableName, const std::string
-  // &Query);
 
 private:
   bool m_IsConnected;
