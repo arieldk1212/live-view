@@ -85,3 +85,21 @@ TEST_F(AddressModelTest, AddressDeleteRecordTest) {
 
   EXPECT_NE(PreData, PostData);
 }
+
+TEST_F(AddressModelTest, AddressPerformanceTest) {
+  AddressModel Address(Manager);
+  Address.Init();
+
+  constexpr int LOOPS = 10000;
+  std::cout << "Number of Iterations: 10K\n";
+  std::cout << "Address Model Add Record Time:\n";
+  {
+    Benchmark here;
+    for (int i = 0; i < LOOPS; i++) {
+      Address.Add(
+          {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+    }
+  }
+
+  EXPECT_EQ(1, 1);
+}

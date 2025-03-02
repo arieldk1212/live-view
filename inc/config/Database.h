@@ -6,8 +6,6 @@
 #include <mutex>
 #include <pqxx/pqxx>
 
-using StringUnMap = std::unordered_map<std::string, std::string>;
-
 class DatabaseManager;
 
 /**
@@ -20,7 +18,7 @@ public:
                         pqxx::write_policy::read_write>;
 
 public:
-  explicit DatabaseConnection(const std::string &ConnectionString);
+  explicit DatabaseConnection(const std::string &ConnectionString) noexcept;
   ~DatabaseConnection();
 
   DatabaseConnection(const DatabaseConnection &) = delete;
@@ -29,7 +27,13 @@ public:
   DatabaseConnection(DatabaseConnection &&) noexcept = delete;
   DatabaseConnection &operator=(DatabaseConnection &&) noexcept = delete;
 
-  bool IsDatabaseConnected();
+  [[nodiscard]] inline bool IsDatabaseConnected() const {
+    return m_DatabaseConnection.is_open();
+  }
+
+  [[nodiscard]] inline std::string GetConnectionString() const {
+    return m_DatabaseConnection.connection_string();
+  }
 
 private:
   friend class DatabaseManager;
@@ -60,7 +64,8 @@ private:
       return m_DatabaseNonTransaction.exec_params(Query,
                                                   std::forward<Args>(args)...);
     } catch (const std::exception &e) {
-      APP_ERROR("CRQUERY(PF) - QUERY EXECUTION ERROR - " + std::string(e.what()));
+      APP_ERROR("CRQUERY(PF) - QUERY EXECUTION ERROR - " +
+                std::string(e.what()));
       return {};
     }
   }
@@ -74,7 +79,6 @@ private:
   pqxx::result WQuery(const std::string &Query);
 
 private:
-  std::mutex m_DatabaseMutex;
   pqxx::connection m_DatabaseConnection;
   pqxx::nontransaction m_DatabaseNonTransaction;
 };

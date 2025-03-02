@@ -11,6 +11,8 @@
 #include <type_traits>
 #include <utility>
 
+using StringUnMap = std::unordered_map<std::string, std::string>;
+
 /**
  * @class DatabaseManager
  * @brief Manges the database models and operations, in front of the db itself.
@@ -21,7 +23,8 @@ public:
    * @brief Constructs the DatabaseManager object, according to the database's
    * connection string.
    */
-  DatabaseManager(const std::string &DatabaseConnectionString);
+  explicit DatabaseManager(
+      const std::string &DatabaseConnectionString) noexcept;
   /**
    * @brief Deconstructs the DatabaseManager object, clearing the database
    * models.
@@ -38,7 +41,16 @@ public:
    * @brief check the status of the database connection.
    * @return bool
    */
-  bool IsDatabaseConnected() const;
+  [[nodiscard]] inline bool IsDatabaseConnected() const {
+    return m_DatabaseManager->IsDatabaseConnected();
+  }
+  /**
+   * @brief Get the Connection String object
+   * @return std::string
+   */
+  [[nodiscard]] inline std::string GetConnectionString() const {
+    return m_DatabaseManager->GetConnectionString();
+  }
 
   /**
    * @brief  serializes the fields of the model, query preparation.
@@ -131,8 +143,8 @@ public:
    * @return pqxx::result
    */
   pqxx::result UpdateColumn(const std::string &ModelName,
-                            const std::string &FieldName,
-                            const std::string &Condition,
+                            std::string_view FieldName,
+                            std::string_view Condition,
                             const pqxx::params &Params);
   /**
    * @brief updates the table's multiple fields values with a specific
@@ -145,7 +157,7 @@ public:
    */
   pqxx::result UpdateColumns(const std::string &ModelName,
                              const StringUnMap &Fields,
-                             const std::string &Condition,
+                             std::string_view Condition,
                              const pqxx::params &Params);
   /**
    * @brief delete a record from the table.
@@ -154,7 +166,7 @@ public:
    * @param Params
    */
   pqxx::result DeleteRecord(const std::string &ModelName,
-                            const std::string &Condition,
+                            std::string_view Condition,
                             const pqxx::params &Params);
 
 private:
@@ -209,37 +221,7 @@ private:
 
 private:
   bool m_IsConnected;
-  std::string m_DatabaseConnectionString;
   std::unique_ptr<DatabaseConnection> m_DatabaseManager;
-
-private:
-  /** @brief to create the connection pool we need, create a new connection,
-   * add, remove, lock. */
-  // std::shared_ptr<DatabasePoolManager> m_DatabaseManager;
 };
-
-/**
- * @class DatabaseConnectionPoolManager
- * @brief this class is reponsible for the database connection pool, currently
- * still in development.
- * @todo implement this class, adjust connections accordingly, study about
- * pool's more.
- */
-
-// class DBManager {
-// public:
-//   DBManager(std::string &&ConnectionString) noexcept;
-//   ~DBManager() = default;
-
-//   void AddConnection(std::unique_ptr<DatabaseConnection> Connection);
-//   void RemoveConnection(std::unique_ptr<DatabaseConnection> Connection);
-//   std::unique_ptr<DatabaseConnection> LockConnection();
-
-// private:
-//   size_t m_DatabaseConntectionPoolSize;
-//   std::mutex m_DatabaseConnectionPoolMutex;
-//   std::string m_DatabaseConnectionString;
-//   std::vector<std::unique_ptr<DatabaseManager>> m_DatabaseConnectionPool;
-// };
 
 #endif

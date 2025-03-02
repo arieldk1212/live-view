@@ -13,6 +13,7 @@ using Json = nlohmann::json;
  * not used due to usage of templated functions, class is no longer needed and
  * useless.
  */
+
 class BaseModel {
 public:
   virtual ~BaseModel() = 0;

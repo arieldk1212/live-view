@@ -2,7 +2,6 @@
 #include "../../Test.h"
 
 #include <future>
-#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>
@@ -353,6 +352,7 @@ TEST_F(DatabaseTest, DatabasePerformanceTest) {
   Manager->AddModel(TestTableName, TestFieldsFirst);
   Manager1->AddModel("Test2", TestFieldsFirst);
   constexpr int LOOPS = 10000;
+  std::cout << "Number of Iterations: 10K\n";
   std::cout << "Insert Into Time:\n";
   {
     Benchmark here;
