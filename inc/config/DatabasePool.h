@@ -1,48 +1,64 @@
 #ifndef DATABASEPOOL_H
 #define DATABASEPOOL_H
 
+#include "../Models/Model.h"
 #include "DatabaseManager.h"
 
 #include <condition_variable>
+#include <queue>
 
 /**
- * @class DatabaseConnectionPoolManager
- * @brief this class is reponsible for the database connection pool, in dev.
+ * @class DatabasePool
  * @todo add logging into database here, each connection will log its status
- * about himself, implement cache, fixed number of
- * connections, optimize queries per given time, and monitor!
+ * about himself, implement cache, optimize queries per given time, and monitor!
  */
 
 class DatabasePool {
 public:
-  template <typename T> using Shared = std::shared_ptr<T>;
+  template <typename Class> using Shared = std::shared_ptr<Class>;
   using SharedManager = Shared<DatabaseManager>;
 
+  template <typename ModelClass>
+  using UniquePtrModel = std::unique_ptr<ModelClass>;
+  template <typename ModelClass> using SharedPtrModel = Shared<ModelClass>;
+
 public:
-  DatabasePool(int PoolSize, std::string &&DatabaseConnectionString);
+  DatabasePool(std::string &&DatabaseConnectionString);
   ~DatabasePool();
 
-  inline int GetPoolLimit() const { return m_DatabasePoolSize; }
-  inline std::string GetConnectionString() const { return m_DatabaseString; }
-  std::string Status(); /* by connection strings? */
+  void InitModels();
 
-  std::optional<SharedManager> GetConnection();
-  void Disconnect(); /* dont use this function */
+  [[nodiscard]] SharedManager GetManagerConnection();
+  void ReturnConnection(SharedManager &Connection);
 
-  void Consumptions(); /* status about all connections. */
-  void SingularConsumption(SharedManager Connection);
+  template <typename ModelClass>
+  [[nodiscard]] UniquePtrModel<ModelClass> GetUniqueModelConnection() {
+    return std::make_unique<ModelClass>();
+  }
 
-private:
-  void Shutdown();
+  template <typename ModelClass>
+  [[nodiscard]] SharedPtrModel<ModelClass> GetSharedModelConnection() {
+    return std::make_shared<ModelClass>();
+  }
+
+  void RunWQuery(); /* apply a method to run query as pqxx worker */
+
+  [[nodiscard]] int GetPoolLimit();
+  [[nodiscard]] int GetCurrentPoolSize();
+  [[nodiscard]] const std::string &GetConnectionString();
+
+  std::string ConnectionsReport();
+  std::string SingularConsumption(SharedManager &Connection);
 
 private:
   std::mutex m_PoolMutex;
   std::condition_variable m_PoolConditionVariable;
 
 private:
-  int m_DatabasePoolSize;
+  Model::Schemes m_ModelSchemes;
+  const int m_DatabasePoolSize{10};
   std::string m_DatabaseString;
-  std::vector<SharedManager> m_DatabasePool;
+  std::queue<SharedManager> m_DatabasePool;
 };
 
 #endif

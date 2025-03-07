@@ -23,8 +23,7 @@ public:
    * @brief Constructs the DatabaseManager object, according to the database's
    * connection string.
    */
-  explicit DatabaseManager(
-      const std::string &DatabaseConnectionString) noexcept;
+  explicit DatabaseManager(const std::string &DatabaseConnectionString);
   /**
    * @brief Deconstructs the DatabaseManager object, clearing the database
    * models.

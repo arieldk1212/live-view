@@ -1,10 +1,10 @@
 {
   "dependencies": [
-    "openssl",
+    "gtest",
     "libpq",
     "libpqxx",
-    "spdlog",
-    "gtest",
-    "nlohmann-json"
+    "nlohmann-json",
+    "openssl",
+    "spdlog"
   ]
 }

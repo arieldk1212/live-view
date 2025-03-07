@@ -1,10 +1,12 @@
 #include "../../inc/Models/AddressModel.h"
+#include "../../inc/Config/DatabasePool.h"
 #include "../Test.h"
 
 class AddressModelTest : public ::testing::Test {
 protected:
   std::string DatabaseConnectionString;
   std::shared_ptr<DatabaseManager> Manager;
+  std::unique_ptr<DatabasePool> Pool;
 
   void SetUp() override {
     if (std::getenv("GITHUB_ACTIONS") != nullptr) {
@@ -14,7 +16,9 @@ protected:
       DatabaseConnectionString =
           Config::TestDatabaseToString("../../configs/config.json");
     }
-    Manager = std::make_shared<DatabaseManager>(DatabaseConnectionString);
+    Pool = std::make_unique<DatabasePool>(std::move(DatabaseConnectionString));
+    Pool->InitModels();
+    Manager = Pool->GetManagerConnection();
   }
 
   void TearDown() override {
@@ -24,50 +28,49 @@ protected:
 };
 
 TEST_F(AddressModelTest, AddressCreationTest) {
-  AddressModel Address(Manager);
-  Address.Init();
+  AddressModel Address;
   auto Result = Manager->GetModelData(Address.GetTableName());
 
   EXPECT_NE(Result.columns(), 0);
 }
 
 TEST_F(AddressModelTest, AddressTableNameTest) {
-  AddressModel Address(Manager);
+  AddressModel Address;
   auto Name = Address.GetTableName();
 
   EXPECT_EQ(Name, "Address");
 }
 
 TEST_F(AddressModelTest, AddressAddRecordTest) {
-  AddressModel Address(Manager);
-  Address.Init();
+  AddressModel Address;
 
   auto PreData = Manager->GetModelData("Address");
-  Address.Add({{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+  Address.Add(Manager,
+              {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
   auto PostData = Manager->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressUpdateColumnRecordTest) {
-  AddressModel Address(Manager);
-  Address.Init();
-  Address.Add({{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+  AddressModel Address;
+  Address.Add(Manager,
+              {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
 
   auto PreData = Manager->GetModelData("Address");
-  Address.Update({{"addressname", "holon"}}, "addressnumber", 18);
+  Address.Update(Manager, {{"addressname", "holon"}}, "addressnumber", 18);
   auto PostData = Manager->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressUpdateColumnsRecordTest) {
-  AddressModel Address(Manager);
-  Address.Init();
-  Address.Add({{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+  AddressModel Address;
+  Address.Add(Manager,
+              {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
 
   auto PreData = Manager->GetModelData("Address");
-  Address.Update({{"addressname", "holon"}, {"addressnumber", "20"}},
+  Address.Update(Manager, {{"addressname", "holon"}, {"addressnumber", "20"}},
                  "addressnumber", 18);
   auto PostData = Manager->GetModelData("Address");
 
@@ -75,20 +78,19 @@ TEST_F(AddressModelTest, AddressUpdateColumnsRecordTest) {
 }
 
 TEST_F(AddressModelTest, AddressDeleteRecordTest) {
-  AddressModel Address(Manager);
-  Address.Init();
-  Address.Add({{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+  AddressModel Address;
+  Address.Add(Manager,
+              {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
 
   auto PreData = Manager->GetModelData("Address");
-  Address.Delete("addressnumber", 18);
+  Address.Delete(Manager, "addressnumber", 18);
   auto PostData = Manager->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressPerformanceTest) {
-  AddressModel Address(Manager);
-  Address.Init();
+  AddressModel Address;
 
   constexpr int LOOPS = 10000;
   std::cout << "Number of Iterations: 10K\n";
@@ -96,8 +98,8 @@ TEST_F(AddressModelTest, AddressPerformanceTest) {
   {
     Benchmark here;
     for (int i = 0; i < LOOPS; i++) {
-      Address.Add(
-          {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+      Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
+                            {"addressnumber", "18"}});
     }
   }
 

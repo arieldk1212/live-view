@@ -13,7 +13,7 @@ public:
   explicit DBResponse(const pqxx::result &ResponseData);
   explicit DBResponse(pqxx::result &&ResponseData);
 
-  [[nodiscard]] inline const std::string GetResponseQuery() const override {
+  [[nodiscard]] inline std::string GetResponseQuery() const override {
     return m_ResponseData.query();
   }
   [[nodiscard]] inline const size_t GetResponseSize() const override {

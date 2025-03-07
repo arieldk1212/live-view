@@ -15,7 +15,6 @@ if (APPLE)
 endif()
 
 include_directories(inc)
-include_directories(${OPENSSL_INCLUDE_DIR})
 
 find_package(OpenSSL REQUIRED)
 find_package(PostgreSQL REQUIRED)
@@ -31,6 +30,7 @@ PostgreSQL::PostgreSQL
 spdlog::spdlog
 nlohmann_json::nlohmann_json
 )
+
 
 add_subdirectory(src)
 enable_testing()

@@ -1,7 +1,7 @@
 #include "../../inc/Config/DatabaseManager.h"
 
 DatabaseManager::DatabaseManager(
-    const std::string &DatabaseConnectionString) noexcept
+    const std::string &DatabaseConnectionString)
     : m_IsConnected(true) {
   m_DatabaseManager =
       std::make_unique<DatabaseConnection>(DatabaseConnectionString);

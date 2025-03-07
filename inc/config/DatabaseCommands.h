@@ -84,7 +84,7 @@ constexpr std::string DatabaseCommandToString(DatabaseCommandType Command) {
     }
   }
   APP_ERROR("DATABASE COMMAND ERROR");
-  return "NULL";
+  return "";
 }
 
 #endif

@@ -1,4 +1,5 @@
 #include "../inc/App.h"
+#include "Models/AddressModel.h"
 
 /**
  * @attention
@@ -36,32 +37,28 @@ int main() {
    */
   {
     Benchmark Here;
-    constexpr int PoolSize{5};
-    DatabasePool Manager{PoolSize, std::move(DatabaseConnectionString)};
-    auto Connection1 = Manager.GetConnection().value();
-    auto Connection2 = Manager.GetConnection().value();
-    auto Connection3 = Manager.GetConnection().value();
-    auto Connection4 = Manager.GetConnection().value();
-    auto Connection5 = Manager.GetConnection().value();
-    // auto Connection5 = Manager.GetConnection().value();
-    // auto Connection6 = Manager.GetConnection().value();
-    // auto Connection7 = Manager.GetConnection().value();
-    // auto Connection8 = Manager.GetConnection().value();
 
-    AddressModel Addresses(Connection1);
-    Addresses.Init();
+    DatabasePool Pool{std::move(DatabaseConnectionString)};
+
+    Pool.InitModels();
+
+    auto ManagerConnection = Pool.GetManagerConnection();
+    /* can init it not by pointer */
+    auto UniqueAddress = Pool.GetUniqueModelConnection<AddressModel>();
 
     /** @brief if used by lvalue, move it to .Add function.  */
-    auto Result = Addresses.Add(
+    auto Result = UniqueAddress->Add(
+        ManagerConnection,
         {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
-    Addresses.Update({{"addressname", "holon"}}, "addressnumber", 18);
-    Addresses.Update({{"addressname", "hn"}, {"addressnumber", "20"}},
-                     "addressnumber", 18);
-    Addresses.Delete("addressnumber", 20);
+    UniqueAddress->Update(ManagerConnection, {{"addressname", "holon"}},
+                          "addressnumber", 18);
+    UniqueAddress->Update(ManagerConnection,
+                          {{"addressname", "hn"}, {"addressnumber", "20"}},
+                          "addressnumber", 18);
+    UniqueAddress->Delete(ManagerConnection, "addressnumber", 20);
 
-    Connection1->RemoveModel(Addresses.GetTableName());
-    Manager.Status();
-    AddressModel Address(Connection2);
-    Manager.Status();
+    ManagerConnection->RemoveModel(UniqueAddress->GetTableName());
+
+    Pool.ReturnConnection(ManagerConnection);
   }
 }
