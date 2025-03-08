@@ -23,19 +23,44 @@ public:
   template <typename ModelClass> using SharedPtrModel = Shared<ModelClass>;
 
 public:
+  /**
+   * @brief Construct a new Database Pool object
+   * @param DatabaseConnectionString
+   */
   DatabasePool(std::string &&DatabaseConnectionString);
   ~DatabasePool();
 
+  /**
+   * @brief Inits the Models in the database, gets a connection, inits, then
+   * returns it.
+   */
   void InitModels();
 
+  /**
+   * @brief Get the Manager Connection object
+   * @return SharedManager
+   */
   [[nodiscard]] SharedManager GetManagerConnection();
+  /**
+   * @brief return the connection
+   * @param Connection
+   */
   void ReturnConnection(SharedManager &Connection);
 
+  /**
+   * @brief Get the Unique Model Connection object
+   * @tparam ModelClass
+   * @return UniquePtrModel<ModelClass>
+   */
   template <typename ModelClass>
   [[nodiscard]] UniquePtrModel<ModelClass> GetUniqueModelConnection() {
     return std::make_unique<ModelClass>();
   }
-
+  /**
+   * @brief Get the Shared Model Connection object
+   * @tparam ModelClass
+   * @return SharedPtrModel<ModelClass>
+   */
   template <typename ModelClass>
   [[nodiscard]] SharedPtrModel<ModelClass> GetSharedModelConnection() {
     return std::make_shared<ModelClass>();
@@ -43,20 +68,42 @@ public:
 
   void RunWQuery(); /* apply a method to run query as pqxx worker */
 
+  /**
+   * @brief Get the Pool Limit object
+   * @return int
+   */
   [[nodiscard]] int GetPoolLimit();
+  /**
+   * @brief Get the Current Pool Size object
+   * @return int
+   */
   [[nodiscard]] int GetCurrentPoolSize();
+  /**
+   * @brief Get the Connection String object
+   * @return const std::string&
+   */
   [[nodiscard]] const std::string &GetConnectionString();
 
+  /**
+   * @brief returns and outputs the pool connection status.
+   * @return std::string
+   */
   std::string ConnectionsReport();
+  /**
+   * @brief returns and outputs a singular connection status.
+   * @param Connection
+   * @return std::string
+   */
   std::string SingularConsumption(SharedManager &Connection);
 
 private:
   std::mutex m_PoolMutex;
+  std::mutex m_StatsMutex;
   std::condition_variable m_PoolConditionVariable;
 
 private:
-  Model::Schemes m_ModelSchemes;
   const int m_DatabasePoolSize{10};
+  Model::Schemes m_ModelSchemes;
   std::string m_DatabaseString;
   std::queue<SharedManager> m_DatabasePool;
 };

@@ -20,4 +20,4 @@ Schemes::SchemeMap Schemes::GetSchema(const std::string &ModelName) const {
   }
   return {};
 }
-}; // namespace Model
+} // namespace Model

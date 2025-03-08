@@ -51,21 +51,22 @@ void DatabasePool::ReturnConnection(SharedManager &Connection) {
 }
 
 int DatabasePool::GetPoolLimit() {
-  std::lock_guard<std::mutex> lock(m_PoolMutex);
+  std::lock_guard<std::mutex> lock(m_StatsMutex);
   return m_DatabasePoolSize;
 }
 
 int DatabasePool::GetCurrentPoolSize() {
-  std::lock_guard<std::mutex> lock(m_PoolMutex);
+  std::lock_guard<std::mutex> lock(m_StatsMutex);
   return static_cast<int>(m_DatabasePool.size());
 }
 
 const std::string &DatabasePool::GetConnectionString() {
-  std::lock_guard<std::mutex> lock(m_PoolMutex);
+  std::lock_guard<std::mutex> lock(m_StatsMutex);
   return m_DatabaseString;
 }
 
 std::string DatabasePool::ConnectionsReport() {
+  std::lock_guard<std::mutex> lock(m_StatsMutex);
   int count = 0;
   std::string Status;
   auto Queue = m_DatabasePool;
@@ -85,6 +86,7 @@ std::string DatabasePool::ConnectionsReport() {
 }
 
 std::string DatabasePool::SingularConsumption(SharedManager &Connection) {
+  std::lock_guard<std::mutex> lock(m_StatsMutex);
   std::cout << "Connection's Ref Count: "
             << std::to_string(Connection.use_count()) << "\n";
   return "Connection's Ref Count: " + std::to_string(Connection.use_count());

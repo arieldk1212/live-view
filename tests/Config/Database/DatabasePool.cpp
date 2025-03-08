@@ -1,6 +1,8 @@
 #include "../../../inc/Config/DatabasePool.h"
 #include "../../Test.h"
+#include "Models/AddressModel.h"
 
+#include "gtest/gtest.h"
 #include <future>
 #include <gtest/gtest.h>
 #include <memory>
@@ -10,7 +12,7 @@
 
 class DatabasePoolTest : public ::testing::Test {
 protected:
-  std::shared_ptr<DatabasePool> Manager;
+  std::unique_ptr<DatabasePool> Manager;
 
   void SetUp() override {
     std::string TestDatabaseConnectionString;
@@ -22,56 +24,110 @@ protected:
           Config::TestDatabaseToString("../../configs/config.json");
     }
     Manager =
-        std::make_shared<DatabasePool>(std::move(TestDatabaseConnectionString));
+        std::make_unique<DatabasePool>(std::move(TestDatabaseConnectionString));
   }
 
-  void SingleThreadTask(std::string &ModelName) {
-    auto ThreadConn = Manager->GetManagerConnection();
-    auto ConnectionStatus = ThreadConn->IsDatabaseConnected();
-    EXPECT_TRUE(ConnectionStatus);
+  void SingleThreadTask(int Operations, std::atomic<int> &SuccessfulHits) {
+    for (int i = 0; i < Operations; i++) {
+      auto ThreadConn = Manager->GetManagerConnection();
+      auto ConnectionStatus = ThreadConn->IsDatabaseConnected();
+      EXPECT_TRUE(ConnectionStatus);
+      SuccessfulHits++;
 
-    auto ConnectionString = ThreadConn->GetConnectionString();
-    EXPECT_FALSE(ConnectionString.empty());
+      auto ConnectionString = ThreadConn->GetConnectionString();
+      EXPECT_FALSE(ConnectionString.empty());
+      SuccessfulHits++;
 
-    ThreadConn->InsertInto(ModelName, {{"addressname", "hamarganit"}});
+      auto AddressConn = Manager->GetUniqueModelConnection<AddressModel>();
+      AddressConn->Add(ThreadConn, {{"addressname", "hamaasdasdasdasd"},
+                                    {"addressnumber", "18"}});
+      SuccessfulHits++;
+
+      Manager->ReturnConnection(ThreadConn);
+    }
   }
 };
 
-TEST_F(DatabasePoolTest, DatabasePoolCreationTest) {
+TEST_F(DatabasePoolTest, DatabasePoolGeneralTest) {
   auto conn = Manager->GetManagerConnection();
   auto Status = conn->IsDatabaseConnected();
-  auto Result = conn->GetConnectionString();
+  auto String = conn->GetConnectionString();
+  auto Size = Manager->GetCurrentPoolSize();
+  auto MaxSize = Manager->GetPoolLimit();
   Manager->ReturnConnection(conn);
+  auto AfterSize = Manager->GetCurrentPoolSize();
 
-  EXPECT_FALSE(Result.empty());
-  EXPECT_GT(Result.length(), 5);
   EXPECT_TRUE(Status);
+  EXPECT_FALSE(String.empty());
+  EXPECT_GT(String.length(), 5);
+  EXPECT_EQ(Size, 9);
+  EXPECT_EQ(AfterSize, 10);
+  EXPECT_EQ(MaxSize, 10);
 }
 
-TEST_F(DatabasePoolTest, DatabasePoolTest) {
-  auto conn1 = Manager->GetManagerConnection();
-  auto conn2 = Manager->GetManagerConnection();
-  auto conn3 = Manager->GetManagerConnection();
-  auto conn4 = Manager->GetManagerConnection();
-  auto conn5 = Manager->GetManagerConnection();
-  auto conn6 = Manager->GetManagerConnection();
-  auto conn7 = Manager->GetManagerConnection();
-  auto conn8 = Manager->GetManagerConnection();
-  auto conn9 = Manager->GetManagerConnection();
-  auto conn10 = Manager->GetManagerConnection();
+TEST_F(DatabasePoolTest, DatabasePoolLimitTest) {
+  auto Connection1 = Manager->GetManagerConnection();
+  auto Connection2 = Manager->GetManagerConnection();
+  auto Connection3 = Manager->GetManagerConnection();
+  auto Connection4 = Manager->GetManagerConnection();
+  auto Connection5 = Manager->GetManagerConnection();
+  auto Connection6 = Manager->GetManagerConnection();
+  auto Connection7 = Manager->GetManagerConnection();
+  auto Connection8 = Manager->GetManagerConnection();
+  auto Connection9 = Manager->GetManagerConnection();
+  auto Connection10 = Manager->GetManagerConnection();
 
-  auto size = Manager->GetCurrentPoolSize();
+  auto PreSize = Manager->GetCurrentPoolSize();
+  Manager->ReturnConnection(Connection1);
+  auto AfterSize = Manager->GetCurrentPoolSize();
 
-  EXPECT_FALSE(size);
+  EXPECT_FALSE(PreSize);
+  EXPECT_NE(PreSize, AfterSize);
 }
 
-// TEST_F(DatabasePoolTest, DatabaseMultiThreadTest) {
-//   auto MainConn = Manager->GetManagerConnection();
-//   // MainConn->AddModel("address");
-//   std::vector<std::thread> Threads;
-//   Threads.reserve(20);
-//   for (int i = 0; i < 100; i++) {
-//     // Threads.emplace_back(SingleThreadTask(),
-//     Manager->GetManagerConnection(), )
-//   }
-// }
+TEST_F(DatabasePoolTest, DatabasePoolInitModelsTest) {
+  Manager->InitModels();
+
+  auto ConnectionTest = Manager->GetManagerConnection();
+
+  auto UniqueAddressModelConn =
+      Manager->GetUniqueModelConnection<AddressModel>();
+
+  auto PreData = ConnectionTest->GetModelData("Address");
+
+  UniqueAddressModelConn->Add(
+      ConnectionTest,
+      {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+
+  auto PostData = ConnectionTest->GetModelData("Address");
+
+  EXPECT_NE(PreData, PostData);
+}
+
+TEST_F(DatabasePoolTest, DatabasePoolMethodsTest) {
+  auto UniqueModelConn = Manager->GetUniqueModelConnection<AddressModel>();
+  auto SharedModelConn = Manager->GetSharedModelConnection<AddressModel>();
+  auto UniqueName = UniqueModelConn->GetTableName();
+  auto SharedName = SharedModelConn->GetTableName();
+
+  EXPECT_EQ(UniqueName, SharedName);
+}
+
+TEST_F(DatabasePoolTest, DatabaseMultiThreadedTest) {
+  constexpr int THREAD_COUNT = 20;
+  constexpr int OPERATIONS = 5;
+  std::vector<std::thread> Threads;
+  std::atomic<int> SuccessfulHits{0};
+
+  Threads.reserve(THREAD_COUNT);
+  for (int i = 0; i < THREAD_COUNT; i++) {
+    Threads.emplace_back([this, OPERATIONS, &SuccessfulHits]() {
+      SingleThreadTask(OPERATIONS, SuccessfulHits);
+    });
+  }
+  for (auto &Thread : Threads) {
+    Thread.join();
+  }
+
+  EXPECT_EQ(SuccessfulHits, 300);
+}

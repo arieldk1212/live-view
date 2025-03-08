@@ -4,11 +4,11 @@
 
 class AddressModelTest : public ::testing::Test {
 protected:
-  std::string DatabaseConnectionString;
   std::shared_ptr<DatabaseManager> Manager;
   std::unique_ptr<DatabasePool> Pool;
 
   void SetUp() override {
+    std::string DatabaseConnectionString;
     if (std::getenv("GITHUB_ACTIONS") != nullptr) {
       DatabaseConnectionString =
           Config::TestDatabaseToString("../../configs/ci-config.json");

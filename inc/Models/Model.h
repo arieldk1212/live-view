@@ -24,6 +24,6 @@ public:
 private:
   std::unordered_map<std::string, SchemeMap> m_Schemes;
 };
-}; // namespace Model
+} // namespace Model
 
 #endif
