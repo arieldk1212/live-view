@@ -19,13 +19,13 @@ jobs:
 
     - name: Install Postgres and autoconf
       run: |
-        brew install autoconf postgresql@15
+        brew install autoconf postgresql@17
     
     - name: Start Postgres Server, Create Role and Database
       run: |
-        export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-        initdb --locale=C -D /opt/homebrew/var/postgres@15
-        pg_ctl -D /opt/homebrew/var/postgres@15 start
+        export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+        initdb --locale=C -D /opt/homebrew/var/postgres@17
+        pg_ctl -D /opt/homebrew/var/postgres@17 start
         createuser -s postgres
         psql -U postgres -c "CREATE ROLE ci WITH LOGIN PASSWORD 'password';"
         psql -U postgres -c "ALTER ROLE ci CREATEDB;"

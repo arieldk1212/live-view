@@ -33,7 +33,7 @@ void DatabasePool::InitModels() {
   ReturnConnection(Manager);
 }
 
-DatabasePool::SharedManager DatabasePool::GetManagerConnection() {
+SharedManager DatabasePool::GetManagerConnection() {
   std::unique_lock<std::mutex> lock(m_PoolMutex);
   m_PoolConditionVariable.wait(lock,
                                [this]() { return !m_DatabasePool.empty(); });

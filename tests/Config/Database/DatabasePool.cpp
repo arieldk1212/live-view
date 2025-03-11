@@ -27,7 +27,8 @@ protected:
         std::make_unique<DatabasePool>(std::move(TestDatabaseConnectionString));
   }
 
-  void SingleThreadTask(int Operations, std::atomic<int> &SuccessfulHits) {
+  void SingleThreadTask(int Operations, std::atomic<int> &SuccessfulHits,
+                        int AddCounts) {
     for (int i = 0; i < Operations; i++) {
       auto ThreadConn = Manager->GetManagerConnection();
       auto ConnectionStatus = ThreadConn->IsDatabaseConnected();
@@ -39,8 +40,13 @@ protected:
       SuccessfulHits++;
 
       auto AddressConn = Manager->GetUniqueModelConnection<AddressModel>();
-      AddressConn->Add(ThreadConn, {{"addressname", "hamaasdasdasdasd"},
-                                    {"addressnumber", "18"}});
+      for (int i = 0; i < AddCounts; i++) {
+        AddressConn->Add(ThreadConn, {{"addressname", "hamaasdasdasdasd"},
+                                      {"addressnumber", "18"},
+                                      {"addresscity", "holon"},
+                                      {"addressdistrict", "center"},
+                                      {"country", "israel"}});
+      }
       SuccessfulHits++;
 
       Manager->ReturnConnection(ThreadConn);
@@ -95,9 +101,12 @@ TEST_F(DatabasePoolTest, DatabasePoolInitModelsTest) {
 
   auto PreData = ConnectionTest->GetModelData("Address");
 
-  UniqueAddressModelConn->Add(
-      ConnectionTest,
-      {{"addressname", "hamaasdasdasdasd"}, {"addressnumber", "18"}});
+  UniqueAddressModelConn->Add(ConnectionTest,
+                              {{"addressname", "hamaasdasdasdasd"},
+                               {"addressnumber", "18"},
+                               {"addresscity", "holon"},
+                               {"addressdistrict", "center"},
+                               {"country", "israel"}});
 
   auto PostData = ConnectionTest->GetModelData("Address");
 
@@ -114,15 +123,16 @@ TEST_F(DatabasePoolTest, DatabasePoolMethodsTest) {
 }
 
 TEST_F(DatabasePoolTest, DatabaseMultiThreadedTest) {
-  constexpr int THREAD_COUNT = 20;
   constexpr int OPERATIONS = 5;
+  constexpr int ADD_COUNT = 20;
+  constexpr int THREAD_COUNT = 20;
   std::vector<std::thread> Threads;
   std::atomic<int> SuccessfulHits{0};
 
   Threads.reserve(THREAD_COUNT);
   for (int i = 0; i < THREAD_COUNT; i++) {
-    Threads.emplace_back([this, OPERATIONS, &SuccessfulHits]() {
-      SingleThreadTask(OPERATIONS, SuccessfulHits);
+    Threads.emplace_back([this, OPERATIONS, &SuccessfulHits, ADD_COUNT]() {
+      SingleThreadTask(OPERATIONS, SuccessfulHits, ADD_COUNT);
     });
   }
   for (auto &Thread : Threads) {

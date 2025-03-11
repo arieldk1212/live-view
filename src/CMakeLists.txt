@@ -9,6 +9,7 @@ Config/DatabaseManager.cpp
 
 Core/UUID.cpp
 Core/Image.cpp
+Core/Address/Address.cpp
 Core/Responses/DatabaseResponse.cpp
 Core/Location/Geolocation.cpp
 Core/Location/PlusCodes/codearea.cpp

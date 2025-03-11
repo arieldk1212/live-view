@@ -5,10 +5,17 @@ Schemes::Schemes() {
   SchemeMap AddressScheme = {
       {"addressid", DatabaseCommandToString(DatabaseFieldCommands::UUID)},
       {"addressname",
-       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100NotNullField)},
       {"addressnumber",
-       DatabaseCommandToString(DatabaseFieldCommands::IntField)},
-      {"entities", DatabaseCommandToString(DatabaseFieldCommands::TextArray)}};
+       DatabaseCommandToString(DatabaseFieldCommands::IntNotNullField)},
+      {"addresscity",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100NotNullField)},
+      {"addressdistrict",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
+      {"country",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)}};
+  // {"addressdata",
+  //  DatabaseCommandToString(DatabaseFieldCommands::TextArray)}};
 
   m_Schemes["Address"] = AddressScheme;
 }

@@ -12,16 +12,18 @@
  * the ORM.
  */
 
-enum class DatabaseFieldCommands {
-  SerialPrimaryKeyField,
+enum class DatabaseFieldCommands : std::uint8_t {
+  UUID,
   IntField,
+  IntNotNullField,
   CharField,
-  VarChar100Field,
   TextArray,
-  UUID
+  VarChar100Field,
+  VarChar100NotNullField,
+  SerialPrimaryKeyField,
 };
 
-enum class DatabaseQueryCommands {
+enum class DatabaseQueryCommands : std::uint8_t {
   SelectAll,
   AlterRole,
   AlterColumn,
@@ -44,9 +46,12 @@ const std::unordered_map<DatabaseFieldCommands, std::string>
     DatabaseFieldStrings = {
         {DatabaseFieldCommands::SerialPrimaryKeyField, "serial primary key"},
         {DatabaseFieldCommands::IntField, "int"},
+        {DatabaseFieldCommands::IntNotNullField, "int not null"},
         {DatabaseFieldCommands::CharField, "char"},
         {DatabaseFieldCommands::VarChar100Field, "varchar(100)"},
-        {DatabaseFieldCommands::UUID, "uuid DEFAULT gen_random_uuid()"},
+        {DatabaseFieldCommands::VarChar100NotNullField,
+         "varchar(100) not null"},
+        {DatabaseFieldCommands::UUID, "uuid DEFAULT gen_random_uuid() unique"},
         {DatabaseFieldCommands::TextArray, "text[]"}};
 
 const std::unordered_map<DatabaseQueryCommands, std::string>

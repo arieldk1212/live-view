@@ -15,14 +15,6 @@
 
 class DatabasePool {
 public:
-  template <typename Class> using Shared = std::shared_ptr<Class>;
-  using SharedManager = Shared<DatabaseManager>;
-
-  template <typename ModelClass>
-  using UniquePtrModel = std::unique_ptr<ModelClass>;
-  template <typename ModelClass> using SharedPtrModel = Shared<ModelClass>;
-
-public:
   /**
    * @brief Construct a new Database Pool object
    * @param DatabaseConnectionString

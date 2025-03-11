@@ -16,13 +16,42 @@ public:
 
   [[nodiscard]] const std::string &GetTableName() const { return m_TableName; }
 
-  pqxx::result Add(std::shared_ptr<DatabaseManager> &Manager,
-                   StringUnMap Fields);
+  /**
+   * @brief add record to Address table.
+   * @param Manager
+   * @param Fields
+   * @return pqxx::result
+   */
+  pqxx::result Add(SharedManager &Manager, StringUnMap Fields);
 
+  /**
+   * @brief Get the Address ID.
+   * @tparam Args
+   * @param Manager
+   * @param args (addressname, addressnumber)
+   * @return std::string
+   */
+  template <typename... Args>
+  [[nodiscard]] std::string GetAddressID(SharedManager &Manager,
+                                         Args &&...args) {
+    auto Result =
+        Manager->GetModelDataArgs(m_TableName, "addressname", "addressnumber",
+                                  std::forward<Args>(args)...);
+    return Result[0]["addressid"].template as<std::string>();
+  }
+
+  /**
+   * @brief update a record in the Address table.
+   * @tparam T
+   * @param Manager
+   * @param Fields
+   * @param Condition
+   * @param arg
+   * @return pqxx::result
+   */
   template <typename T>
-  pqxx::result Update(std::shared_ptr<DatabaseManager> &Manager,
-                      const StringUnMap &Fields, const std::string &Condition,
-                      T &&arg) {
+  pqxx::result Update(SharedManager &Manager, const StringUnMap &Fields,
+                      const std::string &Condition, T &&arg) {
     pqxx::params params;
     if (Fields.size() == 1) {
       auto field = Fields.begin();
@@ -38,15 +67,29 @@ public:
     return Manager->UpdateColumns(m_TableName, Fields, Condition, params);
   }
 
+  /**
+   * @brief delete a record in the Address table.
+   * @tparam T
+   * @param Manager
+   * @param Condition
+   * @param arg
+   * @return pqxx::result
+   */
   template <typename T>
-  pqxx::result Delete(std::shared_ptr<DatabaseManager> &Manager,
-                      const std::string &Condition, T &&arg) {
+  pqxx::result Delete(SharedManager &Manager, const std::string &Condition,
+                      T &&arg) {
     pqxx::params params;
     params.append(std::forward<T>(arg));
     return Manager->DeleteRecord(m_TableName, Condition, params);
   }
 
-  std::optional<Address> GetEntity(const std::string &Condition);
+  /**
+   * @brief Get the Address Data object
+   * @param Manager
+   * @param ID
+   * @return Address
+   */
+  Address GetAddressData(SharedManager &Manager, const std::string &ID);
 
 private:
   std::string m_TableName;

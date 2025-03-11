@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # g for lldb help
 
+set(PostgreSQL_ADDITIONAL_VERSIONS "17")
+
 if (APPLE)
   set(CMAKE_TOOLCHAIN_FILE "/Users/$ENV{USER}/Library/vcpkg/scripts/buildsystems/vcpkg.cmake")
   set(CMAKE_PREFIX_PATH "/Users/$ENV{USER}/Library/vcpkg/installed/arm64-osx/share")
@@ -30,7 +32,6 @@ PostgreSQL::PostgreSQL
 spdlog::spdlog
 nlohmann_json::nlohmann_json
 )
-
 
 add_subdirectory(src)
 enable_testing()

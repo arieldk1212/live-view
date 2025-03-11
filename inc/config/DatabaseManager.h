@@ -11,8 +11,6 @@
 #include <type_traits>
 #include <utility>
 
-using StringUnMap = std::unordered_map<std::string, std::string>;
-
 /**
  * @class DatabaseManager
  * @brief Manges the database models and operations, in front of the db itself.
@@ -87,7 +85,7 @@ public:
    */
   pqxx::result GetModelData(const std::string &ModelName);
   /**
-   * @brief Get the specifig Model Data object from the database.
+   * @brief Get the specific Model Data object from the database.
    * @param ModelName
    * @param FieldName
    * @param template <T>arg
@@ -97,6 +95,23 @@ public:
   pqxx::result GetModelData(const std::string &ModelName,
                             const std::string &FieldName, T &&arg) {
     return GetTableData(ModelName, FieldName, std::forward<T>(arg));
+  }
+  /**
+   * @brief Get the specific Model Data object from the database.
+   * @tparam Args
+   * @param ModelName
+   * @param FirstFieldName
+   * @param SecondFieldName
+   * @param arg
+   * @return pqxx::result
+   */
+  template <typename... Args>
+  pqxx::result GetModelDataArgs(const std::string &ModelName,
+                                const std::string &FirstFieldName,
+                                const std::string &SecondFieldName,
+                                Args &&...arg) {
+    return GetTableData(ModelName, FirstFieldName, SecondFieldName,
+                        std::forward<Args>(arg)...);
   }
   /**
    * @brief add fields to an existing table.
@@ -211,6 +226,28 @@ private:
       return MCrQuery(TableName, query, std::forward<T>(arg));
     } catch (const std::exception &e) {
       APP_ERROR("ERROR AT GETTABLEDATA2 FUNCTION - " + TableName + " - " +
+                std::string(e.what()));
+      return {};
+    }
+  }
+  template <typename... Args>
+  pqxx::result GetTableData(const std::string &TableName,
+                            const std::string &FirstTableFieldName,
+                            const std::string &SecondTableFieldName,
+                            Args &&...args) {
+    std::string query;
+    query.append(DatabaseCommandToString(DatabaseQueryCommands::SelectAll))
+        .append(TableName)
+        .append(" where ")
+        .append(FirstTableFieldName)
+        .append("=$1")
+        .append(" and ")
+        .append(SecondTableFieldName)
+        .append("=$2");
+    try {
+      return MCrQuery(TableName, query, std::forward<Args>(args)...);
+    } catch (const std::exception &e) {
+      APP_ERROR("ERROR AT GETTABLEDATA3 FUNCTION - " + TableName + " - " +
                 std::string(e.what()));
       return {};
     }

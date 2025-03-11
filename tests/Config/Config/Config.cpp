@@ -21,6 +21,6 @@ TEST_F(ConfigTest, ConfigTestDatabaseString) {
 
 TEST_F(ConfigTest, ConfigDatabaseString) {
   std::string GoodDataString = "user=arielkriheli password=password "
-                                "host=localhost port=5432 dbname=arielkriheli";
+                                "host=localhost port=5432 dbname=live_view";
   EXPECT_EQ(DataString, GoodDataString);
 }

@@ -8,6 +8,16 @@
 
 class DatabaseManager;
 
+using StringUnMap = std::unordered_map<std::string, std::string>;
+
+template <typename Class> using Shared = std::shared_ptr<Class>;
+using SharedManager = Shared<DatabaseManager>;
+
+template <typename ModelClass>
+using UniquePtrModel = std::unique_ptr<ModelClass>;
+
+template <typename ModelClass> using SharedPtrModel = Shared<ModelClass>;
+
 /**
  * @warning This header file shouldn't be used directly!
  */
