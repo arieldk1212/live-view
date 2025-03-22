@@ -1,10 +1,8 @@
-#include "../../../inc/Config/DatabasePool.h"
+#include "Config/DatabasePool.h"
 #include "../../Test.h"
 #include "Models/AddressModel.h"
 
-#include "gtest/gtest.h"
 #include <future>
-#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>

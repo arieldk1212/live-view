@@ -9,3 +9,6 @@
 
 26/02/2025:
   - Compilation Time: 6.2 sec -> Release
+
+12/03/2025:
+  - Compilation Time: 6.8 sec

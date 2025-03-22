@@ -13,7 +13,8 @@
  */
 
 enum class DatabaseFieldCommands : std::uint8_t {
-  UUID,
+  PrimaryKey,
+  UUIDPrimaryKey,
   IntField,
   IntNotNullField,
   CharField,
@@ -21,6 +22,10 @@ enum class DatabaseFieldCommands : std::uint8_t {
   VarChar100Field,
   VarChar100NotNullField,
   SerialPrimaryKeyField,
+  TimestampField,
+  LogEnumNotNullField,
+
+  FkAddress,
 };
 
 enum class DatabaseQueryCommands : std::uint8_t {
@@ -44,15 +49,24 @@ enum class DatabaseQueryCommands : std::uint8_t {
 
 const std::unordered_map<DatabaseFieldCommands, std::string>
     DatabaseFieldStrings = {
-        {DatabaseFieldCommands::SerialPrimaryKeyField, "serial primary key"},
+        {DatabaseFieldCommands::PrimaryKey, "primary key"},
+        {DatabaseFieldCommands::UUIDPrimaryKey,
+         "uuid primary key default gen_random_uuid()"},
         {DatabaseFieldCommands::IntField, "int"},
         {DatabaseFieldCommands::IntNotNullField, "int not null"},
         {DatabaseFieldCommands::CharField, "char"},
+        {DatabaseFieldCommands::TextArray, "text[]"},
         {DatabaseFieldCommands::VarChar100Field, "varchar(100)"},
         {DatabaseFieldCommands::VarChar100NotNullField,
          "varchar(100) not null"},
-        {DatabaseFieldCommands::UUID, "uuid DEFAULT gen_random_uuid() unique"},
-        {DatabaseFieldCommands::TextArray, "text[]"}};
+        {DatabaseFieldCommands::SerialPrimaryKeyField, "serial primary key"},
+        {DatabaseFieldCommands::TimestampField,
+         "timestamp default current_timestamp "},
+        {DatabaseFieldCommands::LogEnumNotNullField, "log_level not null"},
+
+        {DatabaseFieldCommands::FkAddress,
+         "constraint fkaddress foreign key (addressid) references "
+         "address(addressid) on delete set null"}};
 
 const std::unordered_map<DatabaseQueryCommands, std::string>
     DatabaseQueryCommandsStrings = {

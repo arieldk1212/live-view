@@ -34,6 +34,8 @@ public:
   DatabaseManager(DatabaseManager &&other) noexcept = delete;
   DatabaseManager &operator=(DatabaseManager &&other) noexcept = delete;
 
+  operator bool() const { return m_IsConnected; }
+
   /**
    * @brief check the status of the database connection.
    * @return bool
@@ -48,6 +50,16 @@ public:
   [[nodiscard]] inline std::string GetConnectionString() const {
     return m_DatabaseManager->GetConnectionString();
   }
+
+  /**
+   * @brief Inits the database timezone.
+   */
+  void InitTimezone();
+
+  /**
+   * @brief Inits the logleves enum in database.
+   */
+  void InitLogLevel();
 
   /**
    * @brief  serializes the fields of the model, query preparation.

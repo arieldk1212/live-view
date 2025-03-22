@@ -1,4 +1,4 @@
-#include "../../inc/Models/Model.h"
+#include "Models/Model.h"
 #include "../Test.h"
 
 class ModelTest : public ::testing::Test {
@@ -11,14 +11,24 @@ protected:
 };
 
 TEST_F(ModelTest, ModelStatusTest) {
-  auto Scheme = scheme->GetSchema("Address");
-  auto Result = Scheme.contains("addressid");
+  auto SchemeAddress = scheme->GetSchema("Address");
+  auto ResultAddress = SchemeAddress.contains("addressid");
 
-  EXPECT_TRUE(Result);
+  auto SchemeAddressLog = scheme->GetSchema("AddressLog");
+  auto ResultAddressLog = SchemeAddressLog.contains("addressid");
+
+  auto SchemeLog = scheme->GetSchema("Log");
+  auto ResultLog = SchemeLog.contains("logid");
+
+  EXPECT_TRUE(ResultAddress);
+  EXPECT_TRUE(ResultAddressLog);
+  EXPECT_TRUE(ResultLog);
 }
 
 TEST_F(ModelTest, ModelSchemesTest) {
   auto Scheme = scheme->GetSchemes();
 
   EXPECT_TRUE(Scheme.contains("Address"));
+  EXPECT_TRUE(Scheme.contains("AddressLog"));
+  EXPECT_TRUE(Scheme.contains("Log"));
 }

@@ -13,6 +13,25 @@ DatabaseManager::~DatabaseManager() {
   APP_CRITICAL("DATABASE MANAGER DESTROYED");
 }
 
+void DatabaseManager::InitTimezone() {
+  try {
+    m_DatabaseManager->CrQuery("set timezone = 'Asia/Jerusalem';");
+    APP_INFO("DATABASE TIMEZONE SETTED TO - Asia/Jerusalem");
+  } catch (const std::exception &e) {
+    APP_ERROR("DATABASE TIMEZONE SET ERROR - " + std::string(e.what()));
+  }
+}
+
+void DatabaseManager::InitLogLevel() {
+  try {
+    m_DatabaseManager->CrQuery("create type log_level as enum ('DEBUG', "
+                               "'INFO', 'WARN', 'ERROR', 'CRIT');");
+    APP_INFO("DATABASE LOG LEVEL ENUM CREATED");
+  } catch (const std::exception &e) {
+    APP_ERROR("DATABASE LOG LEVEL ERROR - " + std::string(e.what()));
+  }
+}
+
 std::string
 DatabaseManager::QuerySerialization(const StringUnMap &ModelFields) {
   std::string Response;

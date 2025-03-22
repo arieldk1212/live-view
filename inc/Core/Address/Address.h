@@ -1,7 +1,6 @@
 #ifndef ADDRESS_H
 #define ADDRESS_H
 
-#include "Conditions/AddressCondition.h"
 #include "Config/DatabaseManager.h"
 
 #include <vector>

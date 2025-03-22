@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24.2)
+cmake_minimum_required(VERSION 3.31)
 project(liveView VERSION 1.0 LANGUAGES CXX
   DESCRIPTION "Live View"
   HOMEPAGE_URL "https://github.com/arieldk1212/live-view")

@@ -5,5 +5,6 @@
 #include "Config/DatabasePool.h"
 #include "Core/Benchmark.h"
 #include "Models/AddressModel.h"
+#include "Models/BaseLogModel.h"
 
 #endif

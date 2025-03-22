@@ -3,7 +3,8 @@
 namespace Model {
 Schemes::Schemes() {
   SchemeMap AddressScheme = {
-      {"addressid", DatabaseCommandToString(DatabaseFieldCommands::UUID)},
+      {"addressid",
+       DatabaseCommandToString(DatabaseFieldCommands::UUIDPrimaryKey)},
       {"addressname",
        DatabaseCommandToString(DatabaseFieldCommands::VarChar100NotNullField)},
       {"addressnumber",
@@ -14,10 +15,29 @@ Schemes::Schemes() {
        DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)},
       {"country",
        DatabaseCommandToString(DatabaseFieldCommands::VarChar100Field)}};
-  // {"addressdata",
-  //  DatabaseCommandToString(DatabaseFieldCommands::TextArray)}};
-
   m_Schemes["Address"] = AddressScheme;
+
+  SchemeMap LogScheme = {
+      {"logid",
+       DatabaseCommandToString(DatabaseFieldCommands::SerialPrimaryKeyField)},
+      {"logtimestamp",
+       DatabaseCommandToString(DatabaseFieldCommands::TimestampField)},
+      {"loglevel",
+       DatabaseCommandToString(DatabaseFieldCommands::LogEnumNotNullField)},
+      {"logmsg",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100NotNullField)}};
+  m_Schemes["Log"] = LogScheme;
+
+  SchemeMap AddressLogScheme = {
+      {"addressid", "uuid"},
+      {"", DatabaseCommandToString(DatabaseFieldCommands::FkAddress)},
+      {"logtimestamp",
+       DatabaseCommandToString(DatabaseFieldCommands::TimestampField)},
+      {"loglevel",
+       DatabaseCommandToString(DatabaseFieldCommands::LogEnumNotNullField)},
+      {"logmsg",
+       DatabaseCommandToString(DatabaseFieldCommands::VarChar100NotNullField)}};
+  m_Schemes["AddressLog"] = AddressLogScheme;
 }
 
 Schemes::SchemeMap Schemes::GetSchema(const std::string &ModelName) const {

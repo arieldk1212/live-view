@@ -1,11 +1,10 @@
-#include "../../inc/Models/AddressModel.h"
-#include "../../inc/Config/DatabasePool.h"
+#include "Models/AddressModel.h"
 #include "../Test.h"
-#include <gtest/gtest.h>
+#include "Config/DatabasePool.h"
 
 class AddressModelTest : public ::testing::Test {
 protected:
-  std::shared_ptr<DatabaseManager> Manager;
+  std::shared_ptr<DatabaseManager> ManagerConnection;
   std::unique_ptr<DatabasePool> Pool;
 
   void SetUp() override {
@@ -19,91 +18,93 @@ protected:
     }
     Pool = std::make_unique<DatabasePool>(std::move(DatabaseConnectionString));
     Pool->InitModels();
-    Manager = Pool->GetManagerConnection();
+    ManagerConnection = Pool->GetManagerConnection();
   }
 
   void TearDown() override {
-    Manager->RemoveModel("Address");
-    Manager.reset();
+    ManagerConnection->RemoveModel("Address");
+    ManagerConnection.reset();
   }
 };
 
 TEST_F(AddressModelTest, AddressCreationTest) {
-  AddressModel Address;
-  auto Result = Manager->GetModelData(Address.GetTableName());
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  auto Result = ManagerConnection->GetModelData(Address->GetTableName());
 
   EXPECT_NE(Result.columns(), 0);
 }
 
 TEST_F(AddressModelTest, AddressTableNameTest) {
-  AddressModel Address;
-  auto Name = Address.GetTableName();
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  auto Name = Address->GetTableName();
 
   EXPECT_EQ(Name, "Address");
 }
 
 TEST_F(AddressModelTest, AddressAddRecordTest) {
-  AddressModel Address;
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
 
-  auto PreData = Manager->GetModelData("Address");
-  Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                        {"addressnumber", "18"},
-                        {"addresscity", "holon"},
-                        {"addressdistrict", "center"},
-                        {"country", "israel"}});
-  auto PostData = Manager->GetModelData("Address");
+  auto PreData = ManagerConnection->GetModelData("Address");
+  Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                   {"addressnumber", "18"},
+                                   {"addresscity", "holon"},
+                                   {"addressdistrict", "center"},
+                                   {"country", "israel"}});
+  auto PostData = ManagerConnection->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressUpdateColumnRecordTest) {
-  AddressModel Address;
-  Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                        {"addressnumber", "18"},
-                        {"addresscity", "holon"},
-                        {"addressdistrict", "center"},
-                        {"country", "israel"}});
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                   {"addressnumber", "18"},
+                                   {"addresscity", "holon"},
+                                   {"addressdistrict", "center"},
+                                   {"country", "israel"}});
 
-  auto PreData = Manager->GetModelData("Address");
-  Address.Update(Manager, {{"addressname", "holon"}}, "addressnumber", 18);
-  auto PostData = Manager->GetModelData("Address");
+  auto PreData = ManagerConnection->GetModelData("Address");
+  Address->Update(ManagerConnection, {{"addressname", "holon"}},
+                  "addressnumber", 18);
+  auto PostData = ManagerConnection->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressUpdateColumnsRecordTest) {
-  AddressModel Address;
-  Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                        {"addressnumber", "18"},
-                        {"addresscity", "holon"},
-                        {"addressdistrict", "center"},
-                        {"country", "israel"}});
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                   {"addressnumber", "18"},
+                                   {"addresscity", "holon"},
+                                   {"addressdistrict", "center"},
+                                   {"country", "israel"}});
 
-  auto PreData = Manager->GetModelData("Address");
-  Address.Update(Manager, {{"addressname", "holon"}, {"addressnumber", "20"}},
-                 "addressnumber", 18);
-  auto PostData = Manager->GetModelData("Address");
+  auto PreData = ManagerConnection->GetModelData("Address");
+  Address->Update(ManagerConnection,
+                  {{"addressname", "holon"}, {"addressnumber", "20"}},
+                  "addressnumber", 18);
+  auto PostData = ManagerConnection->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressDeleteRecordTest) {
-  AddressModel Address;
-  Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                        {"addressnumber", "18"},
-                        {"addresscity", "holon"},
-                        {"addressdistrict", "center"},
-                        {"country", "israel"}});
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                   {"addressnumber", "18"},
+                                   {"addresscity", "holon"},
+                                   {"addressdistrict", "center"},
+                                   {"country", "israel"}});
 
-  auto PreData = Manager->GetModelData("Address");
-  Address.Delete(Manager, "addressnumber", 18);
-  auto PostData = Manager->GetModelData("Address");
+  auto PreData = ManagerConnection->GetModelData("Address");
+  Address->Delete(ManagerConnection, "addressnumber", 18);
+  auto PostData = ManagerConnection->GetModelData("Address");
 
   EXPECT_NE(PreData, PostData);
 }
 
 TEST_F(AddressModelTest, AddressPerformanceTest) {
-  AddressModel Address;
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
 
   constexpr int LOOPS = 10000;
   std::cout << "Number of Iterations: 10K\n";
@@ -111,11 +112,11 @@ TEST_F(AddressModelTest, AddressPerformanceTest) {
   {
     Benchmark here;
     for (int i = 0; i < LOOPS; i++) {
-      Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                            {"addressnumber", "18"},
-                            {"addresscity", "holon"},
-                            {"addressdistrict", "center"},
-                            {"country", "israel"}});
+      Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                       {"addressnumber", "18"},
+                                       {"addresscity", "holon"},
+                                       {"addressdistrict", "center"},
+                                       {"country", "israel"}});
     }
   }
 
@@ -123,18 +124,19 @@ TEST_F(AddressModelTest, AddressPerformanceTest) {
 }
 
 TEST_F(AddressModelTest, AddressAddressTest) {
-  AddressModel Address;
-  Address.Add(Manager, {{"addressname", "hamaasdasdasdasd"},
-                        {"addressnumber", "18"},
-                        {"addresscity", "holon"},
-                        {"addressdistrict", "center"},
-                        {"country", "israel"}});
+  auto Address = Pool->GetUniqueModelConnection<AddressModel>();
+  Address->Add(ManagerConnection, {{"addressname", "hamaasdasdasdasd"},
+                                   {"addressnumber", "18"},
+                                   {"addresscity", "holon"},
+                                   {"addressdistrict", "center"},
+                                   {"country", "israel"}});
 
-  auto AddressID = Address.GetAddressID(Manager, "hamaasdasdasdasd", "18");
+  auto AddressID =
+      Address->GetAddressID(ManagerConnection, "hamaasdasdasdasd", "18");
   EXPECT_EQ(AddressID.length(), 36);
 
   auto ValidAddress =
-      Address.GetAddressData(Manager, AddressID).GetAddressValues();
+      Address->GetAddressData(ManagerConnection, AddressID).GetAddressValues();
 
   EXPECT_EQ(ValidAddress["addressid"], AddressID);
   EXPECT_EQ(ValidAddress["addressname"], "hamaasdasdasdasd");

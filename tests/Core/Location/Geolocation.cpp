@@ -1,4 +1,4 @@
-#include "../../../inc/Core/Location/Geolocation.h"
+#include "Core/Location/Geolocation.h"
 #include "../../Test.h"
 
 class GeolocationTest : public ::testing::Test {

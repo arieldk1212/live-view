@@ -16,7 +16,7 @@ Core/Location/PlusCodes/codearea.cpp
 Core/Location/PlusCodes/openlocationcode.cpp
 
 Models/Model.cpp
-Models/LogModel.cpp
+Models/BaseLogModel.cpp
 Models/AddressModel.cpp
 )
 

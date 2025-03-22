@@ -1,4 +1,4 @@
-#include "../../../inc/Config/Logger.h"
+#include "Config/Logger.h"
 #include "../../Test.h"
 
 int main() {

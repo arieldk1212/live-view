@@ -1,4 +1,4 @@
-#include "../../../inc/Config/DatabaseManager.h"
+#include "Config/DatabaseManager.h"
 #include "../../Test.h"
 
 #include <future>

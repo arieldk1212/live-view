@@ -2,6 +2,8 @@
 #define ADDRESS_MODEL_H
 
 #include "../Core/Address/Address.h"
+#include "../Core/Address/Common/Addresses.h"
+#include "../Core/Address/Common/Countries.h"
 #include "Model.h"
 
 class AddressModel final {
