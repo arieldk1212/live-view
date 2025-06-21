@@ -1,4 +1,4 @@
-#include "../../inc/Config/DatabaseManager.h"
+#include "Config/DatabaseManager.h"
 
 DatabaseManager::DatabaseManager(const std::string &DatabaseConnectionString)
     : m_IsConnected(true) {

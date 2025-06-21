@@ -1,4 +1,4 @@
-#include "../../inc/Config/Database.h"
+#include "Config/Database.h"
 
 DatabaseConnection::DatabaseConnection(
     const std::string &ConnectionString) noexcept

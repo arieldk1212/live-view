@@ -1,9 +1,10 @@
 #ifndef ADDRESS_MODEL_H
 #define ADDRESS_MODEL_H
 
-#include "../Core/Address/Address.h"
-#include "../Core/Address/Common/Addresses.h"
-#include "../Core/Address/Common/Countries.h"
+#include "BaseLogModel.h"
+#include "Core/Address/Address.h"
+#include "Core/Address/Common/Addresses.h"
+#include "Core/Address/Common/Countries.h"
 #include "Model.h"
 
 class AddressModel final {
@@ -62,6 +63,7 @@ public:
       return Manager->UpdateColumn(m_TableName, field->first, Condition,
                                    params);
     }
+
     for (const auto &[key, value] : Fields) {
       params.append(value);
     }

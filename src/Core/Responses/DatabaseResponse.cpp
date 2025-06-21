@@ -1,4 +1,4 @@
-#include "../../../inc/Core/Responses/DatabaseResponse.h"
+#include "Core/Responses/DatabaseResponse.h"
 
 template <typename ResType> Response<ResType>::~Response() {}
 

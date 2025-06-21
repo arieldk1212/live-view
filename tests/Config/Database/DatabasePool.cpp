@@ -3,6 +3,7 @@
 #include "Models/AddressModel.h"
 
 #include <future>
+#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,7 +109,7 @@ TEST_F(DatabasePoolTest, DatabasePoolInitModelsTest) {
 
   auto PostData = ConnectionTest->GetModelData("Address");
 
-  EXPECT_NE(PreData, PostData);
+  EXPECT_FALSE(PreData == PostData);
 }
 
 TEST_F(DatabasePoolTest, DatabasePoolMethodsTest) {

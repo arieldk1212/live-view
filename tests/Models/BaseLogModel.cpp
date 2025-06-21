@@ -2,6 +2,7 @@
 #include "../Test.h"
 #include "Config/DatabasePool.h"
 #include "Models/AddressModel.h"
+#include <gtest/gtest.h>
 
 class BaseLogModelTest : public ::testing::Test {
 protected:
@@ -58,7 +59,7 @@ TEST_F(BaseLogModelTest, LogAddTest) {
     auto AfterData =
         ManagerConnection->GetModelData(UniqueLog->GetModel()->GetTableName());
 
-    EXPECT_NE(PreData, AfterData);
+    EXPECT_FALSE(PreData == AfterData);
   }
 }
 
@@ -76,7 +77,7 @@ TEST_F(BaseLogModelTest, AddressLogAddTest) {
   auto PostDataAddress =
       ManagerConnection->GetModelData(UniqueAddress->GetTableName());
 
-  EXPECT_NE(PreDataAddress, PostDataAddress);
+  EXPECT_FALSE(PreDataAddress == PostDataAddress);
 
   auto AddressID =
       UniqueAddress->GetAddressID(ManagerConnection, "hamaasdasdasdasd", "18");
@@ -94,6 +95,6 @@ TEST_F(BaseLogModelTest, AddressLogAddTest) {
     auto AfterDataAddressLog = ManagerConnection->GetModelData(
         UniqueAddressLog->GetModel()->GetTableName());
 
-    EXPECT_NE(PreDataAddressLog, AfterDataAddressLog);
+    EXPECT_FALSE(PreDataAddressLog == AfterDataAddressLog);
   }
 }

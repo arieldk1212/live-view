@@ -1,4 +1,4 @@
-#include "../../inc/Models/BaseLogModel.h"
+#include "Models/BaseLogModel.h"
 
 BaseLogModel::BaseLogModel(std::string &&TableName)
     : m_TableName(std::move(TableName)) {

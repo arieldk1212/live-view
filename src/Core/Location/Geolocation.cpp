@@ -1,4 +1,4 @@
-#include "../inc/Core/Location/Geolocation.h"
+#include "Core/Location/Geolocation.h"
 
 namespace {
 constexpr double MIN_LATITUDE = -90.0;
@@ -25,11 +25,13 @@ Geolocation::Geolocation(double Latitude, double Longitude)
   }
 }
 
-const std::string Geolocation::GetPlusCode() const { return m_PlusCode; }
-const std::string Geolocation::GetCoordinatesString() const {
+std::string Geolocation::GetPlusCode() const { return m_PlusCode; }
+
+std::string Geolocation::GetCoordinatesString() const {
   return "Latitude: " + std::to_string(m_Latitude) +
          " Longitude: " + std::to_string(m_Longitude);
 }
-const std::pair<double, double> Geolocation::GetCoordinates() const {
+
+std::pair<double, double> Geolocation::GetCoordinates() const {
   return {m_Latitude, m_Longitude};
 }

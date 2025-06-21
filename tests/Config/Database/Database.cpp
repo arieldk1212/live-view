@@ -1,7 +1,8 @@
-#include "Config/DatabaseManager.h"
 #include "../../Test.h"
+#include "Config/DatabaseManager.h"
 
 #include <future>
+#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>
@@ -144,7 +145,7 @@ TEST_F(DatabaseTest, DatabaseTruncateModelTest) {
   auto Response = Manager->TruncateModel(TestTableName);
   auto After = Manager->GetModelData(TestTableName);
 
-  EXPECT_NE(Before, After);
+  EXPECT_NE(Before.empty(), After.empty());
 }
 
 TEST_F(DatabaseTest, DatabaseAddColumnTest) {
@@ -265,7 +266,7 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnTest) {
   Manager->UpdateColumn(TestTableName, "addressname", "id", params);
   auto AfterData = Manager->GetModelData(TestTableName);
 
-  EXPECT_NE(AfterData, PreData);
+  EXPECT_FALSE(AfterData == PreData);
 }
 
 TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
@@ -288,7 +289,7 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
   StringUnMap NewFields = {{"addressname", "new"},
                            {"addresslocation", "fields"}};
   pqxx::params params;
-  
+
   auto MethodResponse = Manager->AddModel(TestTableName, TestFieldsFirst);
   Manager->InsertInto(TestTableName, Data);
   auto PreData = Manager->GetModelData(TestTableName);
@@ -298,7 +299,7 @@ TEST_F(DatabaseTest, DatabaseUpdateColumnsTest) {
   Manager->UpdateColumns(TestTableName, NewFields, "id", params);
   auto AfterData = Manager->GetModelData(TestTableName);
 
-  EXPECT_NE(AfterData, PreData);
+  EXPECT_FALSE(AfterData == PreData);
 }
 
 TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
@@ -328,7 +329,7 @@ TEST_F(DatabaseTest, DatabaseDeleteRecordTest) {
   Manager->DeleteRecord(TestTableName, "id", 2);
   auto AfterData = Manager->GetModelData(TestTableName);
 
-  EXPECT_NE(AfterData, PreData);
+  EXPECT_FALSE(AfterData == PreData);
 }
 
 TEST_F(DatabaseTest, DatabasePerformanceTest) {

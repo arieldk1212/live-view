@@ -1,4 +1,4 @@
-#include "../inc/Config/Logger.h"
+#include "Config/Logger.h"
 
 std::shared_ptr<spdlog::logger> Logger::s_AppLogger;
 std::shared_ptr<spdlog::logger> Logger::s_SystemLogger;

@@ -121,9 +121,9 @@ public:
   pqxx::result GetModelDataArgs(const std::string &ModelName,
                                 const std::string &FirstFieldName,
                                 const std::string &SecondFieldName,
-                                Args &&...arg) {
+                                Args &&...args) {
     return GetTableData(ModelName, FirstFieldName, SecondFieldName,
-                        std::forward<Args>(arg)...);
+                        std::forward<Args>(args)...);
   }
   /**
    * @brief add fields to an existing table.

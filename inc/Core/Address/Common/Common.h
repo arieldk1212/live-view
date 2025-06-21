@@ -10,7 +10,7 @@
  * data.
  * its the backend of the validation process in the frontend using third party
  * api for validation.
- * @todo test it, finish implementing it, test for move semantics.
+ * @todo finish implementing it, test for move semantics.
  */
 
 namespace Common {

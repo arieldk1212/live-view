@@ -1,4 +1,4 @@
-#include "../../inc/Config/DatabasePool.h"
+#include "Config/DatabasePool.h"
 
 DatabasePool::DatabasePool(std::string &&DatabaseConnectionString)
     : m_DatabaseString(std::move(DatabaseConnectionString)) {

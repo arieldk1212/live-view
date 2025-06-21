@@ -1,4 +1,4 @@
-#include "../../../inc/Core/Address/Address.h"
+#include "Core/Address/Address.h"
 
 Address::Address(SharedManager &Manager, std::string IDQuery) {
   auto Result = Manager->GetModelData("Address", "addressid", IDQuery);

@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <pqxx/pqxx>
+#include <string_view>
 
 class DatabaseManager;
 
@@ -71,8 +72,8 @@ private:
       return {};
     }
     try {
-      return m_DatabaseNonTransaction.exec_params(Query,
-                                                  std::forward<Args>(args)...);
+      return m_DatabaseNonTransaction.exec(
+          std::string_view(Query), pqxx::params(std::forward<Args>(args)...));
     } catch (const std::exception &e) {
       APP_ERROR("CRQUERY(PF) - QUERY EXECUTION ERROR - " +
                 std::string(e.what()));

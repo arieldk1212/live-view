@@ -18,6 +18,7 @@ Core/Location/PlusCodes/openlocationcode.cpp
 Models/Model.cpp
 Models/BaseLogModel.cpp
 Models/AddressModel.cpp
+Models/LocationModel.cpp
 )
 
 add_library(src STATIC ${sources})

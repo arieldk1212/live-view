@@ -1,4 +1,4 @@
-#include "../inc/Core/Location/PlusCodes/openlocationcode.h"
+#include "Core/Location/PlusCodes/openlocationcode.h"
 
 #include <algorithm>
 #include <cmath>

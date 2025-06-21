@@ -18,9 +18,9 @@ public:
   Geolocation(double Latitude, double Longitude);
   ~Geolocation() = default;
 
-  [[nodiscard]] const std::string GetPlusCode() const;
-  [[nodiscard]] const std::string GetCoordinatesString() const;
-  [[nodiscard]] const std::pair<double, double> GetCoordinates() const;
+  [[nodiscard]] std::string GetPlusCode() const;
+  [[nodiscard]] std::string GetCoordinatesString() const;
+  [[nodiscard]] std::pair<double, double> GetCoordinates() const;
 
 private:
   double m_Longitude;
