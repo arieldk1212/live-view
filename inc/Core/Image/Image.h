@@ -1,6 +1,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <aws/auth/credentials.h>
+#include <aws/s3/s3_client.h>
+#include <aws/s3/s3express_credentials_provider.h>
 #include <filesystem>
 #include <unordered_map>
 
