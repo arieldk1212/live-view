@@ -23,6 +23,7 @@ find_package(PostgreSQL 16.9 REQUIRED)
 find_package(spdlog 1.15.3 CONFIG REQUIRED)
 find_package(libpqxx 7.10.1 CONFIG REQUIRED)
 find_package(aws-c-s3 CONFIG REQUIRED)
+find_package(aws-cpp-sdk-core REQUIRED)
 find_package(nlohmann_json 3.12.0 CONFIG REQUIRED)
 
 
@@ -32,6 +33,7 @@ OpenSSL::Crypto
 libpqxx::pqxx
 PostgreSQL::PostgreSQL
 AWS::aws-c-s3
+aws-cpp-sdk-core
 spdlog::spdlog
 nlohmann_json::nlohmann_json
 )

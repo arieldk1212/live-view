@@ -19,6 +19,8 @@ Models/Model.cpp
 Models/BaseLogModel.cpp
 Models/AddressModel.cpp
 Models/LocationModel.cpp
+
+Services/Aws/AwsClient.cpp
 )
 
 add_library(src STATIC ${sources})

@@ -1,16 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include <aws/auth/credentials.h>
-#include <aws/s3/s3_client.h>
-#include <aws/s3/s3express_credentials_provider.h>
 #include <filesystem>
 #include <unordered_map>
-
-/**
- * @brief images will be saved in a different storage, possibly an S3 bucket or
- * something like that.
- */
 
 class Image {
 public:
