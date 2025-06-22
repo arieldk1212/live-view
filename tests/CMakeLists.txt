@@ -1,3 +1,5 @@
+set(CMAKE_PREFIX_PATH "../vcpkg_installed/arm64-osx/share")
+
 enable_testing()
 find_package(GTest CONFIG REQUIRED)
 

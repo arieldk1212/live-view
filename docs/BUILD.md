@@ -5,6 +5,7 @@
 * but we will use the docker-compose.yml -> docker compose up --build or without build --parallel
 
 ## Building via CMake
+* download vcpkg in home dir from github (if already downloaded, git pull-./boostrap-vcpkg update)
 * download the vcpkg ports in the vcpkg.json -> vcpkg install
 * clone the repo
 * mkdir build in the base project dir
