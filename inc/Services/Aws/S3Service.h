@@ -4,9 +4,9 @@
 #include "AwsClient.h"
 
 #include <aws/s3/S3Client.h>
+#include <aws/s3/S3ClientConfiguration.h>
 #include <aws/s3/model/BucketLocationConstraint.h>
 #include <aws/s3/model/CreateBucketRequest.h>
-#include <memory>
 
 class S3Service final {
 public:
@@ -19,7 +19,9 @@ public:
 
 private:
   bool m_Status;
-  std::unique_ptr<AwsClient> m_Client;
+  Aws::S3::S3Client m_S3Client;
+  std::unique_ptr<AwsClient> m_AwsClient;
+  Aws::S3::S3ClientConfiguration m_S3ClientConfig{m_AwsClient->GetAwsClient()};
 };
 
 #endif
