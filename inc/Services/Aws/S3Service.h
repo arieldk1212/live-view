@@ -3,6 +3,9 @@
 
 #include "AwsClient.h"
 
+#include <aws/s3/S3Client.h>
+#include <aws/s3/model/BucketLocationConstraint.h>
+#include <aws/s3/model/CreateBucketRequest.h>
 #include <memory>
 
 class S3Service final {
@@ -11,8 +14,8 @@ public:
   ~S3Service();
 
   bool Status() const { return m_Status; }
-  bool ActivateService();
-  bool DeactivateService();
+
+  bool CreateBucket(const Aws::String &BucketName);
 
 private:
   bool m_Status;
