@@ -17,7 +17,7 @@ if (APPLE)
   # set(CMAKE_PREFIX_PATH "/Users/$ENV{USER}/vcpkg/installed/arm64-osx/share")
 
   # Generic-ish
-  set(CMAKE_TOOLCHAIN_FILE "/Users/$ENV{USER}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+  set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
   set(CMAKE_PREFIX_PATH "vcpkg_installed/arm64-osx/share")
 endif()
 
@@ -27,7 +27,7 @@ find_package(OpenSSL 3.5.0 REQUIRED)
 find_package(PostgreSQL 16.9 REQUIRED)
 find_package(spdlog 1.15.3 CONFIG REQUIRED)
 find_package(libpqxx 7.10.1 CONFIG REQUIRED)
-find_package(aws-cpp-sdk-core 1.11.410 REQUIRED)
+find_package(AWSSDK 1.11.428 CONFIG COMPONENTS core dynamodb kinesis s3 REQUIRED)
 find_package(nlohmann_json 3.12.0 CONFIG REQUIRED)
 
 list(APPEND project_libraries
@@ -35,7 +35,7 @@ OpenSSL::SSL
 OpenSSL::Crypto
 libpqxx::pqxx
 PostgreSQL::PostgreSQL
-aws-cpp-sdk-core
+${AWSSDK_LIBRARIES}
 spdlog::spdlog
 nlohmann_json::nlohmann_json
 )
@@ -44,5 +44,6 @@ add_subdirectory(src)
 enable_testing()
 add_subdirectory(tests)
 
+target_include_directories(src PRIVATE ${AWSSDK_INCLUDE_DIRS})
 target_link_libraries(src PRIVATE ${project_libraries})
 target_link_libraries(tests PRIVATE ${project_libraries})

@@ -3,21 +3,42 @@
   "version": "0.1.0",
   "homepage": "https://github.com/arieldk1212/live-view",
   "dependencies": [
+    "aws-sdk-cpp",
     "gtest",
     "libpq",
     "libpqxx",
     "nlohmann-json",
     "openssl",
-    "spdlog",
-    "aws-sdk-cpp"
+    "spdlog"
   ],
   "overrides": [
-    { "name": "libpqxx", "version": "7.10.1" },
-    { "name": "libpq", "version": "16.9" },
-    { "name": "nlohmann-json", "version": "3.12.0" },
-    { "name": "spdlog", "version": "1.15.3" },
-    { "name": "openssl", "version": "3.5.0", "port-version": 1 },
-    { "name": "gtest", "version": "1.17.0", "port-version": 1 },
-    { "name": "aws-sdk-cpp", "version": "1.11.410" } 
+    {
+      "name": "libpqxx",
+      "version": "7.10.1"
+    },
+    {
+      "name": "libpq",
+      "version": "16.9"
+    },
+    {
+      "name": "nlohmann-json",
+      "version": "3.12.0"
+    },
+    {
+      "name": "spdlog",
+      "version": "1.15.3"
+    },
+    {
+      "name": "openssl",
+      "version": "3.5.0#1"
+    },
+    {
+      "name": "gtest",
+      "version": "1.17.0#1"
+    },
+    {
+      "name": "aws-sdk-cpp",
+      "version": "1.11.428"
+    }
   ]
 }
