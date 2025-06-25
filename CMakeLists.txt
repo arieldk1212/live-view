@@ -27,23 +27,25 @@ find_package(OpenSSL 3.5.0 REQUIRED)
 find_package(PostgreSQL 16.9 REQUIRED)
 find_package(spdlog 1.15.3 CONFIG REQUIRED)
 find_package(libpqxx 7.10.1 CONFIG REQUIRED)
-find_package(AWSSDK 1.11.428 CONFIG COMPONENTS core dynamodb kinesis s3 REQUIRED)
 find_package(nlohmann_json 3.12.0 CONFIG REQUIRED)
+find_package(aws-cpp-sdk-core REQUIRED)
 
 list(APPEND project_libraries
 OpenSSL::SSL
 OpenSSL::Crypto
 libpqxx::pqxx
 PostgreSQL::PostgreSQL
-${AWSSDK_LIBRARIES}
 spdlog::spdlog
 nlohmann_json::nlohmann_json
+aws-cpp-sdk-core
 )
 
 add_subdirectory(src)
+
+target_include_directories(src PRIVATE aws-cpp-sdk-core)
+
 enable_testing()
 add_subdirectory(tests)
 
-target_include_directories(src PRIVATE ${AWSSDK_INCLUDE_DIRS})
 target_link_libraries(src PRIVATE ${project_libraries})
 target_link_libraries(tests PRIVATE ${project_libraries})

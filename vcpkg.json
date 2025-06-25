@@ -2,14 +2,15 @@
   "name": "live-view",
   "version": "0.1.0",
   "homepage": "https://github.com/arieldk1212/live-view",
+  "builtin-baseline": "f75c836a67777a86a2c1116a28b179827f028b66",
   "dependencies": [
-    "aws-sdk-cpp",
     "gtest",
     "libpq",
     "libpqxx",
     "nlohmann-json",
     "openssl",
-    "spdlog"
+    "spdlog",
+    "aws-sdk-cpp"
   ],
   "overrides": [
     {
@@ -35,10 +36,6 @@
     {
       "name": "gtest",
       "version": "1.17.0#1"
-    },
-    {
-      "name": "aws-sdk-cpp",
-      "version": "1.11.428"
     }
   ]
 }
