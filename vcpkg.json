@@ -26,16 +26,20 @@
       "version": "3.12.0"
     },
     {
-      "name": "spdlog",
-      "version": "1.15.3"
-    },
-    {
       "name": "openssl",
       "version": "3.5.0#1"
     },
     {
       "name": "gtest",
       "version": "1.17.0#1"
+    },
+    {
+      "name": "aws-sdl-cpp",
+      "version": "1.11.534"
+    },
+    {
+      "name": "spdlog",
+      "version": "1.15.3"
     }
   ]
 }

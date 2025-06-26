@@ -1,5 +1,5 @@
-#ifndef AWS_CLIENT_H
-#define AWS_CLIENT_H
+#ifndef AWS_OBJ_H
+#define AWS_OBJ_H
 
 #include "Config/Logger.h"
 
@@ -9,17 +9,17 @@
 using namespace Aws;
 using namespace Aws::Auth;
 
-class AwsClient final {
+class AwsObj final {
 public:
-  AwsClient();
-  ~AwsClient();
+  AwsObj();
+  ~AwsObj();
 
-  const auto &GetAwsClient() const { return m_AwsClient; }
+  const auto &GetAwsObj() const { return m_AwsObj; }
   const auto &GetOptions() const { return m_AwsOptions; }
 
 private:
   Aws::SDKOptions m_AwsOptions;
-  Aws::Client::ClientConfiguration m_AwsClient;
+  Aws::Client::ClientConfiguration m_AwsObj;
 };
 
 #endif

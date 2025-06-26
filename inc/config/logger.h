@@ -21,7 +21,9 @@ public:
    */
   static void Init(const std::string &path);
   static std::shared_ptr<spdlog::logger> &GetAppLogger() { return s_AppLogger; }
-  static std::shared_ptr<spdlog::logger> &GetSystemLogger() { return s_SystemLogger; }
+  static std::shared_ptr<spdlog::logger> &GetSystemLogger() {
+    return s_SystemLogger;
+  }
 
 private:
   static std::shared_ptr<spdlog::logger> s_AppLogger;
@@ -47,7 +49,7 @@ private:
 #define SYSTEM_CRITICAL(...) Logger::GetSystemLogger()->critical(__VA_ARGS__)
 #else
 #define APP_INFO(...) (void)0
-#define APP_TRACE(...) (void)0 
+#define APP_TRACE(...) (void)0
 #define APP_DEBUG(...) (void)0
 #define APP_ERROR(...) (void)0
 #define APP_WARNING(...) (void)0

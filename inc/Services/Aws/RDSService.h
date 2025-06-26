@@ -1,7 +1,7 @@
 #ifndef RDS_SERVICE_H
 #define RDS_SERVICE_H
 
-#include "AwsClient.h"
+#include "AwsObj.h"
 
 
 class RDSService final {
