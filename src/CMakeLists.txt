@@ -20,8 +20,8 @@ Models/BaseLogModel.cpp
 Models/AddressModel.cpp
 Models/LocationModel.cpp
 
-Services/Aws/AwsObj.cpp
-Services/Aws/S3Service.cpp
+# Services/Aws/AwsObj.cpp
+# Services/Aws/S3Service.cpp
 )
 
 add_library(src STATIC ${sources})
