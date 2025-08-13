@@ -5,22 +5,11 @@
   "builtin-baseline": "f75c836a67777a86a2c1116a28b179827f028b66",
   "dependencies": [
     "gtest",
-    "libpq",
-    "libpqxx",
     "nlohmann-json",
     "openssl",
-    "spdlog",
-    "fmt"
+    "spdlog"
   ],
   "overrides": [
-    {
-      "name": "libpqxx",
-      "version": "7.10.1"
-    },
-    {
-      "name": "libpq",
-      "version": "16.9"
-    },
     {
       "name": "nlohmann-json",
       "version": "3.12.0"
@@ -36,10 +25,6 @@
     {
       "name": "spdlog",
       "version": "1.15.0"
-    },
-    {
-      "name": "fmt",
-      "version": "10.2.0"
     }
 
   ]

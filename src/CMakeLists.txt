@@ -3,25 +3,14 @@ App.cpp
 
 Config/Logger.cpp
 Config/Config.cpp
-Config/Database.cpp
-Config/DatabasePool.cpp
-Config/DatabaseManager.cpp
 
 Core/UUID.cpp
 Core/Image.cpp
-Core/Address/Address.cpp
 Core/Responses/DatabaseResponse.cpp
 Core/Location/Geolocation.cpp
 Core/Location/PlusCodes/codearea.cpp
 Core/Location/PlusCodes/openlocationcode.cpp
 
-Models/Model.cpp
-Models/BaseLogModel.cpp
-Models/AddressModel.cpp
-Models/LocationModel.cpp
-
-# Services/Aws/AwsObj.cpp
-# Services/Aws/S3Service.cpp
 )
 
 add_library(src STATIC ${sources})

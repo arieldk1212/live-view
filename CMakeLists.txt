@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(liveView VERSION 1.0 LANGUAGES CXX
+project(liveView VERSION 1.1 LANGUAGES CXX
   DESCRIPTION "Live View"
   HOMEPAGE_URL "https://github.com/arieldk1212/live-view")
 
@@ -11,8 +11,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(PostgreSQL_ADDITIONAL_VERSIONS "17")
 
 if (APPLE)
-  # Local
-  # set(CMAKE_PREFIX_PATH "/Users/$ENV{USER}/vcpkg/installed/arm64-osx/share")
   set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
   set(CMAKE_PREFIX_PATH "vcpkg_installed/arm64-osx/share")
 endif()
@@ -20,28 +18,19 @@ endif()
 include_directories(inc)
 
 find_package(OpenSSL 3.5.0 REQUIRED)
-find_package(PostgreSQL 16.9 REQUIRED)
-find_package(libpqxx 7.10.1 CONFIG REQUIRED)
 find_package(nlohmann_json 3.12.0 CONFIG REQUIRED)
-# find_package(aws-cpp-sdk-core 1.11.534 REQUIRED)
 find_package(spdlog 1.15.0 CONFIG REQUIRED)
-find_package(fmt 10.2.0 CONFIG REQUIRED)
 
 list(APPEND project_libraries
 OpenSSL::SSL
 OpenSSL::Crypto
-libpqxx::pqxx
-PostgreSQL::PostgreSQL
 nlohmann_json::nlohmann_json
-# aws-cpp-sdk-core
 spdlog::spdlog
-fmt::fmt
 )
 
 add_subdirectory(src)
 enable_testing()
 add_subdirectory(tests)
 
-# target_include_directories(src PRIVATE aws-cpp-sdk-core)
 target_link_libraries(src PRIVATE ${project_libraries})
 target_link_libraries(tests PRIVATE ${project_libraries})
