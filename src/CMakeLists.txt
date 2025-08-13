@@ -1,12 +1,10 @@
 list(APPEND sources
 App.cpp
 
-Config/Logger.cpp
 Config/Config.cpp
 
 Core/UUID.cpp
 Core/Image.cpp
-Core/Responses/DatabaseResponse.cpp
 Core/Location/Geolocation.cpp
 Core/Location/PlusCodes/codearea.cpp
 Core/Location/PlusCodes/openlocationcode.cpp

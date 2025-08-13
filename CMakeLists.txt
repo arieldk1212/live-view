@@ -19,13 +19,11 @@ include_directories(inc)
 
 find_package(OpenSSL 3.5.0 REQUIRED)
 find_package(nlohmann_json 3.12.0 CONFIG REQUIRED)
-find_package(spdlog 1.15.0 CONFIG REQUIRED)
 
 list(APPEND project_libraries
 OpenSSL::SSL
 OpenSSL::Crypto
 nlohmann_json::nlohmann_json
-spdlog::spdlog
 )
 
 add_subdirectory(src)

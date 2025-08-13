@@ -38,14 +38,7 @@ int main() {
    */
   std::filesystem::path ConfigPath = "../../configs/config.json";
 
-  Logger::Init(Config::LoggingPathToString(ConfigPath));
   auto DatabaseConnectionString = Config::DatabaseToString(ConfigPath);
-
-  APP_INFO("APP LOGGER INITIALIZED");
-  SYSTEM_INFO("SYSTEM LOGGER INITIALIZED");
-
-  APP_INFO("APP INITIALIZED");
-  SYSTEM_INFO("SYSTEM INITIALIZED");
 
   {
     Benchmark Here;

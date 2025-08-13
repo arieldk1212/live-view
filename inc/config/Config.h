@@ -1,8 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "Config/Logger.h"
-
 #include <exception>
 #include <filesystem>
 #include <fstream>

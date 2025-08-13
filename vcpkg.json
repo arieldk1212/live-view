@@ -6,8 +6,7 @@
   "dependencies": [
     "gtest",
     "nlohmann-json",
-    "openssl",
-    "spdlog"
+    "openssl"
   ],
   "overrides": [
     {
@@ -21,11 +20,7 @@
     {
       "name": "gtest",
       "version": "1.17.0#1"
-    },
-    {
-      "name": "spdlog",
-      "version": "1.15.0"
     }
-
   ]
 }
+

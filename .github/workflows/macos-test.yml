@@ -17,19 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Postgres and autoconf
+    - name: Install autoconf
       run: |
-        brew install autoconf postgresql@17
-    
-    - name: Start Postgres Server, Create Role and Database
-      run: |
-        export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
-        initdb --locale=C -D /opt/homebrew/var/postgres@17
-        pg_ctl -D /opt/homebrew/var/postgres@17 start
-        createuser -s postgres
-        psql -U postgres -c "CREATE ROLE ci WITH LOGIN PASSWORD 'password';"
-        psql -U postgres -c "ALTER ROLE ci CREATEDB;"
-        psql -U postgres -c "CREATE DATABASE live_view_ci_test OWNER ci;"
+        brew install autoconf
 
     - name: Install vcpkg
       run: |

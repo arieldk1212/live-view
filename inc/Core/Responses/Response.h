@@ -5,7 +5,6 @@
 #include "Core/Benchmark.h"
 
 #include <chrono>
-#include <pqxx/pqxx>
 
 template <typename ResType> class Response {
 public:

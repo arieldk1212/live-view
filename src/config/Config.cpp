@@ -37,7 +37,6 @@ std::string Config::DatabaseToString(const std::filesystem::path &Path) {
         .append(JsonData["DATABASE"]["dbname"]);
     return Data;
   } catch (const Json::exception &e) {
-    SYSTEM_ERROR("CONFIG FILE ERROR - DATABASE - " + std::string(e.what()));
     return "";
   }
 }
@@ -62,8 +61,7 @@ std::string Config::TestDatabaseToString(const std::filesystem::path &Path) {
         .append(JsonData["TEST_DATABASE"]["dbname"]);
     return Data;
   } catch (const Json::exception &e) {
-    SYSTEM_ERROR("CONFIG FILE ERROR - TEST_DATABASE - " +
-                 std::string(e.what()));
+    std::cerr << e.what();
     return "";
   }
 }
