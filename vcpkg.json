@@ -6,7 +6,8 @@
   "dependencies": [
     "gtest",
     "nlohmann-json",
-    "openssl"
+    "openssl",
+    "flatbuffers"
   ],
   "overrides": [
     {
@@ -15,7 +16,7 @@
     },
     {
       "name": "openssl",
-      "version": "3.5.0#1"
+      "version": "3.5.2"
     },
     {
       "name": "gtest",
