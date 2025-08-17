@@ -5,18 +5,12 @@
   "builtin-baseline": "f75c836a67777a86a2c1116a28b179827f028b66",
   "dependencies": [
     "gtest",
-    "nlohmann-json",
-    "openssl",
-    "flatbuffers"
+    "nlohmann-json"
   ],
   "overrides": [
     {
       "name": "nlohmann-json",
       "version": "3.12.0"
-    },
-    {
-      "name": "openssl",
-      "version": "3.5.2"
     },
     {
       "name": "gtest",

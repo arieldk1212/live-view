@@ -42,5 +42,5 @@ add_subdirectory(src)
 enable_testing()
 add_subdirectory(tests)
 
-target_link_libraries(src PRIVATE ${project_libraries})
-target_link_libraries(tests PRIVATE ${project_libraries})
+target_link_libraries(src PRIVATE ${PROJ_LIBS})
+target_link_libraries(tests PRIVATE ${PROJ_LIBS})
