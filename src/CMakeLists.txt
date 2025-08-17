@@ -15,5 +15,5 @@ add_library(src STATIC ${sources})
 
 add_executable(App ${sources})
 
-target_link_libraries(App PRIVATE src ${project_libraries})
+target_link_libraries(App PRIVATE src ${PROJ_LIBS})
 target_compile_definitions(App PRIVATE ENABLE_LOGGING)

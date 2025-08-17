@@ -36,6 +36,13 @@ flatbuffers::flatbuffers
 firebase_app
 firebase_auth
 firebase_database
+nlohmann_json::nlohmann_json
+gssapi_krb5
+pthread
+"-framework CoreFoundation"
+"-framework Foundation"
+"-framework GSS"
+"-framework Security"
 )
 
 add_subdirectory(src)

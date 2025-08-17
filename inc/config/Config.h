@@ -1,7 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>

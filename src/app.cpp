@@ -1,4 +1,5 @@
 #include "App.h"
+#include <firebase/app.h>
 
 /**
  * @attention
@@ -43,4 +44,12 @@ int main() {
   {
     Benchmark Here;
   }
+  ::firebase::App *LVApp = ::firebase::App::Create();
+
+  ::firebase::auth::Auth *LVAuth = nullptr;
+  ::firebase::database::Database *LVDatabase = nullptr;
+
+  // {
+  //   Benchmark Here;
+  // }
 }

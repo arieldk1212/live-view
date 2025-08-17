@@ -11,7 +11,7 @@ Core/Location/Geolocation.cpp
 )
 
 add_library(TestLib INTERFACE)
-target_link_libraries(TestLib INTERFACE ${PROJECT_LIBRARIES})
+target_link_libraries(TestLib INTERFACE ${PROJ_LIBS})
 
 include(GoogleTest)
 
